@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/10 15:15:16 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/10 15:43:47 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_bool handle_param_option(char *arg, t_data *ssl_data)
 	return true;
 }
 
-void	handle_option(int ac, char **av, t_data *ssl_data)
+t_bool	handle_option(int ac, char **av, t_data *ssl_data)
 {
 	int		i;
 
@@ -52,7 +52,7 @@ void	handle_option(int ac, char **av, t_data *ssl_data)
 				continue;
 			if (handle_param_option(av[i], ssl_data) == false) {
 				ft_printf(_USAGE_);
-				return;
+				return false;
 			}
 		} else
 			break;
@@ -60,6 +60,7 @@ void	handle_option(int ac, char **av, t_data *ssl_data)
 	while (i < ac)
 		ft_add_lststr(&(ssl_data->files_name), av[i++]);
 	ft_print_lststr(ssl_data->files_name);
+	return true;
 }
 
 int		main(int argc, char **argv)
@@ -71,6 +72,10 @@ int		main(int argc, char **argv)
 		ft_printf(_USAGE_);
 		return (_ERROR_);
 	}
-	handle_option(argc, argv, &ssl_data);
+	if (handle_option(argc, argv, &ssl_data) == true)
+	{
+		if (ssl_data.hash_flag == T_MD5)
+			ft_md5(&ssl_data);
+	}
 	return (0);
 }
