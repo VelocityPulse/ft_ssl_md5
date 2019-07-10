@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/10 15:43:47 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/10 16:28:40 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 t_bool	handle_hash_option(char *arg, t_data *ssl_data)
 {
-	if (ft_strcmp(arg, "-md5") == _CMP_EQUAL_)
+	if (ft_strequ(arg, "-md5"))
 		ssl_data->hash_flag = T_MD5;
-	else if (ft_strcmp(arg, "-sha256") == _CMP_EQUAL_)
+	else if (ft_strequ(arg, "-sha256"))
 		ssl_data->hash_flag = T_SHA256;
 	else
 		return false;
@@ -25,13 +25,13 @@ t_bool	handle_hash_option(char *arg, t_data *ssl_data)
 
 t_bool handle_param_option(char *arg, t_data *ssl_data)
 {
-	if (ft_strcmp(arg, "-p") == _CMP_EQUAL_)
+	if (ft_strequ(arg, "-p"))
 		ssl_data->p_flag = true;
-	else if (ft_strcmp(arg, "-q") == _CMP_EQUAL_)
+	else if (ft_strequ(arg, "-q"))
 		ssl_data->q_flag = true;
-	else if (ft_strcmp(arg, "-r") == _CMP_EQUAL_)
+	else if (ft_strequ(arg, "-r"))
 		ssl_data->r_flag = true;
-	else if (ft_strcmp(arg, "-s") == _CMP_EQUAL_)
+	else if (ft_strequ(arg, "-s"))
 		ssl_data->s_flag = true;
 	else
 		return false;
@@ -67,15 +67,10 @@ int		main(int argc, char **argv)
 {
 	t_data	ssl_data;
 
-	if (argc < 2)
-	{
-		ft_printf(_USAGE_);
-		return (_ERROR_);
-	}
 	if (handle_option(argc, argv, &ssl_data) == true)
 	{
 		if (ssl_data.hash_flag == T_MD5)
-			ft_md5(&ssl_data);
+			ft_md5_handle(&ssl_data);
 	}
 	return (0);
 }

@@ -1,26 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   md5.c                                              :+:      :+:    :+:   */
+/*   ssl_process.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/10 16:06:17 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/10 17:35:49 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incl/header.h"
 
-void		ft_md5_handle(t_data *ssl_data)
+static void		read_stdin(t_data *ssl_data)
 {
-	get_content(ssl_data);
+	char		*str;
+	t_lststr	*stdin;
 
-	// t_lststr	*next;
-	//
-	// next = ssl_data->files_name;
-	// while (next != NULL)
-	// {
-	//
-	// }
+	while (get_next_line(0, &str) > 0) {
+		ft_add_lststr(&stdin, str);
+		ft_add_lststr(&stdin, "\n");
+	}
+	str = ft_merge_lststr(stdin);
+	ft_add_lststr(&(ssl_data->files_content), str);
+}
+
+void			get_content(t_data *ssl_data)
+{
+	if (ssl_data->files_name == NULL)
+		read_stdin(ssl_data);
 }

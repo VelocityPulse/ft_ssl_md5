@@ -6,12 +6,13 @@
 #    By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/21 12:14:25 by cchameyr          #+#    #+#              #
-#    Updated: 2019/07/10 15:43:13 by cchameyr         ###   ########.fr        #
+#    Updated: 2019/07/10 17:00:38 by cchameyr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 FILES =				main.c \
-					md5.c
+					md5.c \
+					ssl_process.c
 
 SRCS =				$(addprefix srcs/, $(FILES))
 
@@ -25,17 +26,17 @@ LIBFT =				libft/libft.a
 
 DEBUGSEGFAULT =		-g3 -fsanitize=address
 
-FLAGS =				-Wall -Wextra -Werror $(DEBUGSEGFAULT)
+FLAGS =				#-Wall -Wextra -Werror
 
 RM =				rm -rf
 
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(FLAGS) $(DEBUGSEGFAULT) $(OBJS) $(LIBFT) -o $(NAME)
 
 $(OBJS):
-	$(CC) $(FLAGS) -c $(SRCS)
+	$(CC) $(FLAGS) $(DEBUGSEGFAULT) -c $(SRCS)
 	@make objs_mv
 
 objs_mv:

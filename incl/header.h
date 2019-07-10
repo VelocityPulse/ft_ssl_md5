@@ -6,13 +6,14 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/10 15:37:09 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/10 17:14:07 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_HEADER_H
 
 # include "../libft/libft.h"
+# include <stdlib.h>
 
 # define _USAGE_ "Usage: [-md5 -sha256] [-p -q -r -s] [file]\n"
 
@@ -34,5 +35,8 @@ typedef struct	s_data
 	t_lststr	*files_content;
 }				t_data;
 
+void		ft_md5_handle(t_data *ssl_data);
+
+void		get_content(t_data *ssl_data);
 
 #endif
