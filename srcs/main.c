@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/10 16:28:40 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/10 19:50:25 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ t_bool	handle_option(int ac, char **av, t_data *ssl_data)
 	}
 	while (i < ac)
 		ft_add_lststr(&(ssl_data->files_name), av[i++]);
-	ft_print_lststr(ssl_data->files_name);
 	return true;
 }
 

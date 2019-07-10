@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/10 17:14:07 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/10 19:00:21 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct	s_data
 	t_bool		r_flag;
 	t_bool		s_flag;
 	t_lststr	*files_name;
-	t_lststr	*files_content;
+	t_list		*files_content;
 }				t_data;
 
 void		ft_md5_handle(t_data *ssl_data);
