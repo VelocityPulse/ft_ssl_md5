@@ -6,11 +6,11 @@
 #    By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/21 12:14:25 by cchameyr          #+#    #+#              #
-#    Updated: 2019/07/08 23:15:12 by cchameyr         ###   ########.fr        #
+#    Updated: 2019/07/10 13:32:50 by cchameyr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-FILES =				main.c \
+FILES =				main.c
 
 SRCS =				$(addprefix srcs/, $(FILES))
 
@@ -24,7 +24,7 @@ LIBFT =				libft/libft.a
 
 DEBUGSEGFAULT =		-g3 -fsanitize=address
 
-FLAGS =				-Wall -Wextra -Werror #$(DEBUGSEGFAULT)
+FLAGS =				-Wall -Wextra -Werror $(DEBUGSEGFAULT)
 
 RM =				rm -rf
 
