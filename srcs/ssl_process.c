@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/10 21:30:50 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/11 18:30:03 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,4 @@ void			get_content(t_data *ssl_data)
 		read_stdin(ssl_data);
 	else
 		read_files(ssl_data);
-
-	t_list *list = ssl_data->files_content;
-	while (list)
-	{
-		if (list->content != NULL) {
-			ft_putnstr(list->content, list->content_size);
-			ft_putchar('\n');
-			// TODO call functions
-		}
-		list = list->next;
-	}
 }

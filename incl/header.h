@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/10 19:00:21 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/11 19:05:56 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 # include "../libft/libft.h"
 # include <stdlib.h>
+#include <stdint.h>
 
 # define _USAGE_ "Usage: [-md5 -sha256] [-p -q -r -s] [file]\n"
 
@@ -35,7 +36,18 @@ typedef struct	s_data
 	t_list		*files_content;
 }				t_data;
 
-void		ft_md5_handle(t_data *ssl_data);
+typedef struct	s_md5
+{
+	uint32_t	buff[16]; // block 512
+	uint32_t	state[4]; // abcd 128
+	int			count;
+	uint32_t	a;
+	uint32_t	b;
+	uint32_t	c;
+	uint32_t	d;
+}				t_md5;
+
+void		ft_md5_handle(t_data *ssl_data, char *str, int len);
 
 void		get_content(t_data *ssl_data);
 

@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/10 19:50:25 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/11 18:34:12 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,21 @@ t_bool	handle_option(int ac, char **av, t_data *ssl_data)
 int		main(int argc, char **argv)
 {
 	t_data	ssl_data;
+	t_list	*content;
 
 	if (handle_option(argc, argv, &ssl_data) == true)
 	{
-		if (ssl_data.hash_flag == T_MD5)
-			ft_md5_handle(&ssl_data);
+		get_content(&ssl_data);
+		content = ssl_data.files_content;
+		while (content)
+		{
+			if (content->content == NULL)
+				ft_printf("failed to read\n");
+			else if (ssl_data.hash_flag == T_MD5)
+				ft_md5_handle(&ssl_data, content->content, content->content_size);
+
+			content = content->next;
+		}
 	}
 	return (0);
 }
