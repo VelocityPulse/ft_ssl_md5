@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/11 18:34:12 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/16 18:41:31 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int		main(int argc, char **argv)
 	{
 		get_content(&ssl_data);
 		content = ssl_data.files_content;
-		while (content)
+		while (content)	
 		{
 			if (content->content == NULL)
 				ft_printf("failed to read\n");
