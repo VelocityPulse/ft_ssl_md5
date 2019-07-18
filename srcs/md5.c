@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/17 22:40:04 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/18 18:38:06 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,6 @@ static const uint32_t	g_k[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-# define ALIGN(SIZE) (((SIZE - 1) + 2) - ((SIZE - 1) % 2))
-#define PAGE_SIZE 448
-#define LENGHT_ALIGN(SIZE) (((SIZE - 1) + PAGE_SIZE) - ((SIZE - 1) % PAGE_SIZE))
-
 void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 {
 	t_md5	md5;
@@ -93,78 +89,33 @@ void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 	ft_bzero(md5.buff, 64);
 	ft_printf("len : %d\n", len);
 	ft_printf("bits : %d\n", len * 8);
+	ft_printf("len aligned: %d\n", LENGHT_ALIGN(len));
 
-	// 56char == 448bits
-	if (len < 56)
-	{
-		ft_memcpy((void *)md5.buff, str, len);
+	ft_memcpy((void *)md5.buff, str, len);
 
-		printBits(str, len);
-		printBits(md5.buff, len);
-		((char *)md5.buff)[len] = -128;
-		md5.buff[14] = len * 8;
-		// md5.buff[14] = 2147483648;
+	printBits(str, len);
+	printBits(str, LENGHT_ALIGN(len));
 
 
-		printBits(md5.buff, 64);
-
-		printBits(&(md5.buff[14]), sizeof(uint32_t));
+	// printBits(md5.buff, len);
 
 
-		ft_printf("\n");
-		for (int i = 0; i < 16; i++)
-			ft_printf("[%d]\t: %d\n", i, md5.buff[i]);
-
-		ft_printf("\n");
-		bitscounter_uint32(16);
-
-		avail = sizeof(md5.buff) - (md5.count & 0x3f);
-		ft_printf("\navail = %d\n", avail);
+	((char *)md5.buff)[len] = -128;
+	md5.buff[14] = len * 8;
 
 
-		return;
-	}
-	ft_memcpy(md5.buff, str, 64);
+	printBits(md5.buff, 64);
 
+	printBits(&(md5.buff[14]), sizeof(uint32_t));
 
-	ft_printf("size of uint32_t = %d octets/bytes\n", sizeof(uint32_t));
-	ft_printf("size of char = %d octet/byte\n\n", sizeof(char)``);
-	// bitscounter_uint32(len);
-	// bitscounter_char((char *)str);
-	//
-	// bitscounter_uint32(16);
-	// bitscounter_uint32(4);
-	//
-	// ft_printf("\n");
-	//
 
 	ft_printf("\n");
-
-	// int bits = len * 8;
-	// bits = 510;
-
-	// int aligned = LENGHT_ALIGN(bits) - 64;
-	// ft_printf("%d - %d - %d - %d\n", bits, aligned, aligned % 512, 448 % 512);
-
-
-
-
-	ft_printf("%d\n", (char *)md5.buff);
-	ft_printf("%d\n", (char *)md5.buff + (sizeof(md5.buff) - avail));
-	// ft_printf("%d\n", sizeof(md5.buff));
-
+	for (int i = 0; i < 16; i++)
+		ft_printf("[%d]\t: %d\n", i, md5.buff[i]);
 	ft_printf("\n");
+	bitscounter_uint32(16);
 
-
-
-	// md5.count += len;
-	// if (avail > len)
-	// {
-	// 	ft_memcpy((char *)md5.buff + (sizeof(md5.buff) - avail), str, len);
-	// 	return ;
-	// }
-
-	// ft_printf("%d\n", md5.count);
-
+	avail = sizeof(md5.buff) - (md5.count & 0x3f);
+	ft_printf("\navail = %d\n", avail);
 
 }

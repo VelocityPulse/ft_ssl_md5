@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/11 18:30:03 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/18 18:37:42 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,35 @@ static void		read_stdin(t_data *ssl_data)
 	ft_lstadd(&(ssl_data->files_content), ft_lstnew(str, ft_strlen(str)));
 }
 
+static t_list	*read_file(char *path)
+{
+	int			fd;
+	void		*ptr;
+	struct stat	buff;
+	t_list		*data;
+
+	data = (t_list *)ft_memalloc(sizeof(t_list));
+	if ((fd = open(path, O_RDONLY)) < 0)
+		return data;
+	if (fstat(fd, &buff) < 0)
+		return data;
+	ptr = mmap(0, LENGHT_ALIGN(buff.st_size), PROT_READ, MAP_PRIVATE, fd, 0);
+	if (ptr == MAP_FAILED)
+		return data;
+	data->content = ptr;
+	data->content_size = buff.st_size;
+	return data;
+}
+
 static void 	read_files(t_data *ssl_data)
 {
 	t_lststr	*item_file;
 	t_list		*lstnew;
-	t_bin		*content;
 
 	item_file = ssl_data->files_name;
 	while (item_file)
 	{
-		content = ft_read_file(item_file->str);
-		if (content == NULL)
-			lstnew = ft_lstnew(NULL, 0);
-		else
-			lstnew = ft_lstnew(content->data, content->size);
+		lstnew = read_file(item_file->str);
 		ft_lstadd(&(ssl_data->files_content), lstnew);
 		item_file = item_file->next;
 	}

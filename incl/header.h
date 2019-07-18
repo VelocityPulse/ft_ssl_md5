@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/11 19:05:56 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/18 18:37:06 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,16 @@
 
 # include "../libft/libft.h"
 # include <stdlib.h>
-#include <stdint.h>
+# include <stdint.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <sys/mman.h>
 
 # define _USAGE_ "Usage: [-md5 -sha256] [-p -q -r -s] [file]\n"
+
+# define MOD_BITS 448
+# define MOD_BYTE 56
+# define LENGHT_ALIGN(SIZE) (((SIZE - 1) + MOD_BYTE) - ((SIZE - 1) % MOD_BYTE))
 
 typedef enum	e_hashflag
 {
