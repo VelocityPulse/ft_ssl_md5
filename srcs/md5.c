@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/18 18:38:06 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/18 19:59:18 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,11 @@ void printBits(void const * const ptr, size_t size)
 
     for (i = 0; i < size; i++)
     {
-		ft_printf(" ");
-		if (!(i % 10))
+		if (i != 0)
+			ft_printf(" ");
+		if (!(i % 8) && i != 0)
 			ft_printf("\n");
+		ft_printf("[%03d]", i);
         for (j = 7; j >= 0; j--)
         {
             byte = (b[i] >> j) & 1;
@@ -93,25 +95,30 @@ void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 
 	ft_memcpy((void *)md5.buff, str, len);
 
+	// ((char *)md5.buff)[len] = -128;
+	// md5.buff[14] = len * 8;
+
+	str[len] = -128;
+
+	int t = (LENGHT_ALIGN(len)) / 4 - 1;
+	ft_printf("t = %d\n", t);
+	((uint32_t *)str)[t] = ft_bswap32(len * 8);
+	// (str[LENGHT_ALIGN(len) - 1]) = len * 8;
+
 	printBits(str, len);
 	printBits(str, LENGHT_ALIGN(len));
 
 
 	// printBits(md5.buff, len);
 
+	// printBits(md5.buff, 64);
 
-	((char *)md5.buff)[len] = -128;
-	md5.buff[14] = len * 8;
-
-
-	printBits(md5.buff, 64);
-
-	printBits(&(md5.buff[14]), sizeof(uint32_t));
+	// printBits(&(md5.buff[14]), sizeof(uint32_t));
 
 
-	ft_printf("\n");
-	for (int i = 0; i < 16; i++)
-		ft_printf("[%d]\t: %d\n", i, md5.buff[i]);
+	// ft_printf("\n");
+	// for (int i = 0; i < 16; i++)
+	// 	ft_printf("[%d]\t: %d\n", i, md5.buff[i]);
 	ft_printf("\n");
 	bitscounter_uint32(16);
 

@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/18 18:37:06 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/18 19:06:40 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 # define MOD_BITS 448
 # define MOD_BYTE 56
-# define LENGHT_ALIGN(SIZE) (((SIZE - 1) + MOD_BYTE) - ((SIZE - 1) % MOD_BYTE))
+# define LENGHT_ALIGN(SIZE) (((SIZE) + MOD_BYTE) - ((SIZE) % MOD_BYTE))
 
 typedef enum	e_hashflag
 {

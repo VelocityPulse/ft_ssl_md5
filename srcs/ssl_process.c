@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/18 18:37:42 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/18 19:15:17 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static t_list	*read_file(char *path)
 		return data;
 	if (fstat(fd, &buff) < 0)
 		return data;
-	ptr = mmap(0, LENGHT_ALIGN(buff.st_size), PROT_READ, MAP_PRIVATE, fd, 0);
+	ptr = mmap(0, LENGHT_ALIGN(buff.st_size), PROT_WRITE, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
 		return data;
 	data->content = ptr;
