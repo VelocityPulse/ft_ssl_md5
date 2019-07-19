@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/19 15:10:47 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/19 15:45:52 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,10 @@ void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 
 	// setting padding
 	str[len] = -128;
-	((uint64_t *)str)[md5.aligned64 / 8 - 1] = ft_bswap64(len * 8);
+	//big endian
+	//((uint64_t *)str)[md5.aligned64 / 8 - 1] = ft_bswap64(len * 8);
+	//little endian
+	((uint64_t *)str)[md5.aligned64 / 8 - 1] = len * 8;
 
 	ft_printf("print str:\n");
 	printBits(str, len);
@@ -109,16 +112,20 @@ void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 	printBits(str, md5.aligned64);
 
 	// processing
-	int rest = md5.aligned56 * 8;
+	int rest = md5.aligned64 * 8;
+	int block = 0;
 	while (rest > 0)
 	{
-		// ft_printf("\n");
-		// ft_printf("rest : %d\n", rest);
-		ft_memcpy((void *)md5.buff, str, len);
+		ft_printf("\n");
+		ft_printf("rest : %d\n", rest);
+		ft_memcpy((void *)md5.buff, str + (64 * block++), 64);
 		rest -= 512;
 
-		// for (int i = 0; i < 16; i++)
-		// 	ft_printf("[%d]\t: %d\n", i, md5.buff[i]);
+		for (int i = 0; i < 16; i++)
+			// big endian
+			//ft_printf("[%d]\t: %ld\n", i, ft_bswap32(md5.buff[i]));
+			//little endian
+			ft_printf("[%d]\t: %ld\n", i, md5.buff[i]);
 
 	}
 
