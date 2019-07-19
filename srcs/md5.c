@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/18 19:59:18 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/19 15:10:47 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void printBits(void const * const ptr, size_t size)
             ft_printf("%u", byte);
         }
     }
-    ft_printf("\n");
+    ft_printf("\n\n");
 }
 
 static const uint32_t	g_r[64] = {
@@ -80,49 +80,46 @@ static const uint32_t	g_k[64] = {
 void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 {
 	t_md5	md5;
-	uint32_t	avail;
 
 	md5.state[0] = 0x67452301;
 	md5.state[1] = 0xefcdab89;
 	md5.state[2] = 0x98badcfe;
 	md5.state[3] = 0x10325476;
 	md5.count = 0;
+	md5.aligned56 = ALIGN56(len);
+	md5.aligned64 = ALIGN64(md5.aligned56);
 
 	ft_bzero(md5.buff, 64);
 	ft_printf("len : %d\n", len);
 	ft_printf("bits : %d\n", len * 8);
-	ft_printf("len aligned: %d\n", LENGHT_ALIGN(len));
+	ft_printf("aligned56: %d\n", md5.aligned56);
 
-	ft_memcpy((void *)md5.buff, str, len);
+	// debug
+	int t = md5.aligned56 / 4 - 1;
+	ft_printf("t = %d\n\n", t * 4);
 
-	// ((char *)md5.buff)[len] = -128;
-	// md5.buff[14] = len * 8;
-
+	// setting padding
 	str[len] = -128;
+	((uint64_t *)str)[md5.aligned64 / 8 - 1] = ft_bswap64(len * 8);
 
-	int t = (LENGHT_ALIGN(len)) / 4 - 1;
-	ft_printf("t = %d\n", t);
-	((uint32_t *)str)[t] = ft_bswap32(len * 8);
-	// (str[LENGHT_ALIGN(len) - 1]) = len * 8;
-
+	ft_printf("print str:\n");
 	printBits(str, len);
-	printBits(str, LENGHT_ALIGN(len));
+	ft_printf("print str aligned:\n");
 
+	printBits(str, md5.aligned64);
 
-	// printBits(md5.buff, len);
+	// processing
+	int rest = md5.aligned56 * 8;
+	while (rest > 0)
+	{
+		// ft_printf("\n");
+		// ft_printf("rest : %d\n", rest);
+		ft_memcpy((void *)md5.buff, str, len);
+		rest -= 512;
 
-	// printBits(md5.buff, 64);
+		// for (int i = 0; i < 16; i++)
+		// 	ft_printf("[%d]\t: %d\n", i, md5.buff[i]);
 
-	// printBits(&(md5.buff[14]), sizeof(uint32_t));
-
-
-	// ft_printf("\n");
-	// for (int i = 0; i < 16; i++)
-	// 	ft_printf("[%d]\t: %d\n", i, md5.buff[i]);
-	ft_printf("\n");
-	bitscounter_uint32(16);
-
-	avail = sizeof(md5.buff) - (md5.count & 0x3f);
-	ft_printf("\navail = %d\n", avail);
+	}
 
 }

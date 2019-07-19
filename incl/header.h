@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/18 19:06:40 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/19 15:07:33 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@
 
 # define MOD_BITS 448
 # define MOD_BYTE 56
-# define LENGHT_ALIGN(SIZE) (((SIZE) + MOD_BYTE) - ((SIZE) % MOD_BYTE))
+# define BLOCK_BITS 512
+# define BLOCK_BYTE 64
+# define ALIGN56(SIZE) (((SIZE) + MOD_BYTE) - ((SIZE) % MOD_BYTE))
+# define ALIGN64(SIZE) (((SIZE) + BLOCK_BYTE) - ((SIZE) % BLOCK_BYTE))
 
 typedef enum	e_hashflag
 {
@@ -48,6 +51,8 @@ typedef struct	s_md5
 	uint32_t	buff[16]; // block 512
 	uint32_t	state[4]; // abcd 128
 	int			count;
+	int			aligned56;
+	int			aligned64;
 	uint32_t	a;
 	uint32_t	b;
 	uint32_t	c;
