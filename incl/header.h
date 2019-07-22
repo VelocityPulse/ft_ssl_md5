@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/19 16:17:21 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/22 15:27:55 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ typedef struct	s_md5
 {
 	uint32_t	buff[16]; // block 512
 	uint32_t	state[4]; // abcd 128
-	int			count;
 	int			aligned56;
 	int			aligned64;
 	uint32_t	a;

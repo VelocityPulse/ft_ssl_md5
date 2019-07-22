@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/22 14:51:49 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/22 15:28:52 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void printBits(void const * const ptr, size_t size)
     ft_printf("\n\n");
 }
 
-static const uint32_t	g_r[64] = {
+static const uint32_t	g_s[64] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, \
 	5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, \
 	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, \
@@ -77,140 +77,89 @@ static const uint32_t	g_k[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-#include <stdio.h>
+
+static void		ft_md5_init_padding(char *s, int len, t_md5 *md5)
+{
+	md5->state[0] = 0x67452301;
+	md5->state[1] = 0xefcdab89;
+	md5->state[2] = 0x98badcfe;
+	md5->state[3] = 0x10325476;
+	md5->aligned56 = ALIGN56(len);
+	md5->aligned64 = ALIGN64(md5->aligned56);
+	ft_bzero(md5->buff, 64);
+
+	// setting padding
+	s[len] = -128;
+	//little endian
+	((uint64_t *)s)[md5->aligned64 / 8 - 1] = len * 8;
+}
+
+static void		ft_md5_processing(t_md5 *md5, int i)
+{
+	if (i < 16)
+	{
+		md5->f = (md5->b & md5->c) | ((~md5->b) & md5->d);
+		md5->g = i;
+	}
+	else if (i < 32)
+	{
+		md5->f = (md5->d & md5->b) | ((~md5->d) & md5->c);
+		md5->g = (5 * i + 1) % 16;
+	}
+	else if (i < 48)
+	{
+		md5->f = md5->b ^ md5->c ^ md5->d;
+		md5->g = (3 * i + 5) % 16;
+	}
+	else
+	{
+		md5->f = md5->c ^ (md5->b | (~md5->d));
+		md5->g = (7 * i) % 16;
+	}
+	md5->f = md5->f + md5->a + g_k[i] + md5->buff[md5->g];
+	md5->a = md5->d;
+	md5->d = md5->c;
+	md5->c = md5->b;
+	md5->b = md5->b + ft_b32rotate_left(md5->f, g_s[i]);
+}
+
+static void		ft_md5_loop(char *str, t_md5 *md5)
+{
+	int rest;
+	int block = 0;
+	int i;
+
+	rest = md5->aligned64 * 8;
+	while (rest > 0)
+	{
+		ft_memcpy((void *)md5->buff, str + (64 * block++), 64);
+		rest -= BLOCK_BITS;
+
+		md5->a = md5->state[0];
+		md5->b = md5->state[1];
+		md5->c = md5->state[2];
+		md5->d = md5->state[3];
+
+		i = -1;
+		while (++i < 64)
+			ft_md5_processing(md5, i);
+		md5->state[0] += md5->a;
+		md5->state[1] += md5->b;
+		md5->state[2] += md5->c;
+		md5->state[3] += md5->d;
+	}
+}
 
 void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 {
 	t_md5	md5;
-
-	md5.state[0] = 0x67452301;
-	md5.state[1] = 0xefcdab89;
-	md5.state[2] = 0x98badcfe;
-	md5.state[3] = 0x10325476;
-	md5.count = 0;
-	md5.aligned56 = ALIGN56(len);
-	md5.aligned64 = ALIGN64(md5.aligned56);
-
-	ft_bzero(md5.buff, 64);
-	ft_printf("len : %d\n", len);
-	ft_printf("bits : %d\n", len * 8);
-	ft_printf("aligned56: %d\n", md5.aligned56);
-
-	// debug
-	int t = md5.aligned56 / 4 - 1;
-	ft_printf("t = %d\n\n", t * 4);
-
-	// setting padding
-	str[len] = -128;
-
-	//big endian
-	//((uint64_t *)str)[md5.aligned64 / 8 - 1] = ft_bswap64(len * 8);
-
-	//little endian
-	((uint64_t *)str)[md5.aligned64 / 8 - 1] = len * 8;
-
-	// bits debug :
-	// ft_printf("print str:\n");
-	// printBits(str, len);
-	// ft_printf("print str aligned:\n");
-	// printBits(str, md5.aligned64);
-
-	// processing blocks
-	int rest = md5.aligned64 * 8;
-	int block = 0;
-	while (rest > 0)
-	{
-		ft_printf("\n");
-		ft_printf("rest : %d\n", rest);
-		ft_memcpy((void *)md5.buff, str + (64 * block++), 64);
-		rest -= 512;
-
-		// debug print
-		for (int i = 0; i < 16; i++)
-		{
-			// big endian
-			// ft_printf("[%d]\t: %ld\n", i, ft_bswap32(md5.buff[i]));
-
-			//little endian
-			ft_printf("[%d]\t: %ld\n", i, md5.buff[i]);
-		}
-
-
-		// ALGO
-		md5.a = md5.state[0];
-		md5.b = md5.state[1];
-		md5.c = md5.state[2];
-		md5.d = md5.state[3];
-
-		int i = -1;
-
-		while (++i < 64)
-		{
-			if (i < 16)
-			{
-				md5.f = (md5.b & md5.c) | ((~md5.b) & md5.d);
-				md5.g = i;
-			}
-			else if (i < 32)
-			{
-				md5.f = (md5.d & md5.b) | ((~md5.d) & md5.c);
-				md5.g = (5 * i + 1) % 16;
-			}
-			else if (i < 48)
-			{
-				md5.f = md5.b ^ md5.c ^ md5.d;
-				md5.g = (3 * i + 5) % 16;
-			}
-			else
-			{
-				md5.f = md5.c ^ (md5.b | (~md5.d));
-				md5.g = (7 * i) % 16;
-			}
-
-			md5.f = md5.f + md5.a + g_k[i] + md5.buff[md5.g]; // str[md5.g]
-			// md5.f = md5.f + md5.a + g_k[i] + str[md5.g];
-			md5.a = md5.d;
-			md5.d = md5.c;
-			md5.c = md5.b;
-			md5.b = md5.b + ft_b32rotate_left(md5.f, g_r[i]);
-
-			ft_printf("%x %x %x %x\n", md5.a, md5.b, md5.c, md5.d);
-		}
-
-		md5.state[0] += md5.a;
-		md5.state[1] += md5.b;
-		md5.state[2] += md5.c;
-		md5.state[3] += md5.d;
-
-	}
-
-	
-	ft_printf("\n");
-	printBits(md5.state, sizeof(uint32_t) * 4);
-	for (int x = 0; x < 4; x++) {
-		ft_printf("%x ", md5.state[x]);
-		// md5.state[x] = ft_bswap32(md5.state[x]);
-		// ft_printf("%ld\n", md5.state[x]);
-	}
-
-	ft_printf("\n\n");
 	char digest[16] = {0};
 
-	bitscounter_uint32(4);
-	ft_printf("\n");
-
-	// md5.state[0] = ft_bswap32(md5.state[0]);
-	// md5.state[1] = ft_bswap32(md5.state[1]);
-	// md5.state[2] = ft_bswap32(md5.state[2]);
-	// md5.state[3] = ft_bswap32(md5.state[3]);
+	ft_md5_init_padding(str, len, &md5);
+	ft_md5_loop(str, &md5);
 
 	ft_memcpy(digest, md5.state, 16);
-
-
-
 	int i = -1;
 	while (++i < 16)
 		ft_printf("%02x ", digest[i] & 0xFF);
-		// ft_printf("%02x ", ft_bswap8(digest[i]));
-
 }

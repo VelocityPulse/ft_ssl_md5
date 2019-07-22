@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/19 14:55:37 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/22 15:33:30 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void		read_stdin(t_data *ssl_data)
 	ft_lstadd(&(ssl_data->files_content), ft_lstnew(str, ft_strlen(str)));
 }
 
-static t_list	*read_file(char *path)
+static t_list	*alloc_file(char *path)
 {
 	int			fd;
 	void		*ptr;
@@ -53,7 +53,7 @@ static void 	read_files(t_data *ssl_data)
 	item_file = ssl_data->files_name;
 	while (item_file)
 	{
-		lstnew = read_file(item_file->str);
+		lstnew = alloc_file(item_file->str);
 		ft_lstadd(&(ssl_data->files_content), lstnew);
 		item_file = item_file->next;
 	}
