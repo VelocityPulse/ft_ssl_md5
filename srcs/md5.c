@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/19 17:16:24 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/22 14:51:49 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ static const uint32_t	g_k[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
+#include <stdio.h>
+
 void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 {
 	t_md5	md5;
@@ -107,11 +109,11 @@ void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 	//little endian
 	((uint64_t *)str)[md5.aligned64 / 8 - 1] = len * 8;
 
-	ft_printf("print str:\n");
-	printBits(str, len);
-	ft_printf("print str aligned:\n");
-
-	printBits(str, md5.aligned64);
+	// bits debug :
+	// ft_printf("print str:\n");
+	// printBits(str, len);
+	// ft_printf("print str aligned:\n");
+	// printBits(str, md5.aligned64);
 
 	// processing blocks
 	int rest = md5.aligned64 * 8;
@@ -133,9 +135,8 @@ void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 			ft_printf("[%d]\t: %ld\n", i, md5.buff[i]);
 		}
 
+
 		// ALGO
-
-
 		md5.a = md5.state[0];
 		md5.b = md5.state[1];
 		md5.c = md5.state[2];
@@ -143,34 +144,73 @@ void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 
 		int i = -1;
 
-		while (++i < 63)
+		while (++i < 64)
 		{
 			if (i < 16)
 			{
-
+				md5.f = (md5.b & md5.c) | ((~md5.b) & md5.d);
+				md5.g = i;
 			}
 			else if (i < 32)
 			{
-
+				md5.f = (md5.d & md5.b) | ((~md5.d) & md5.c);
+				md5.g = (5 * i + 1) % 16;
 			}
 			else if (i < 48)
 			{
-
+				md5.f = md5.b ^ md5.c ^ md5.d;
+				md5.g = (3 * i + 5) % 16;
 			}
-			else if (i < 64)
+			else
 			{
-
+				md5.f = md5.c ^ (md5.b | (~md5.d));
+				md5.g = (7 * i) % 16;
 			}
-
 
 			md5.f = md5.f + md5.a + g_k[i] + md5.buff[md5.g]; // str[md5.g]
+			// md5.f = md5.f + md5.a + g_k[i] + str[md5.g];
 			md5.a = md5.d;
 			md5.d = md5.c;
 			md5.c = md5.b;
-			md5.b = ft_b32rotate_left(md5.f, g_r[i]);
+			md5.b = md5.b + ft_b32rotate_left(md5.f, g_r[i]);
 
+			ft_printf("%x %x %x %x\n", md5.a, md5.b, md5.c, md5.d);
 		}
 
+		md5.state[0] += md5.a;
+		md5.state[1] += md5.b;
+		md5.state[2] += md5.c;
+		md5.state[3] += md5.d;
+
 	}
+
+	
+	ft_printf("\n");
+	printBits(md5.state, sizeof(uint32_t) * 4);
+	for (int x = 0; x < 4; x++) {
+		ft_printf("%x ", md5.state[x]);
+		// md5.state[x] = ft_bswap32(md5.state[x]);
+		// ft_printf("%ld\n", md5.state[x]);
+	}
+
+	ft_printf("\n\n");
+	char digest[16] = {0};
+
+	bitscounter_uint32(4);
+	ft_printf("\n");
+
+	// md5.state[0] = ft_bswap32(md5.state[0]);
+	// md5.state[1] = ft_bswap32(md5.state[1]);
+	// md5.state[2] = ft_bswap32(md5.state[2]);
+	// md5.state[3] = ft_bswap32(md5.state[3]);
+
+	ft_memcpy(digest, md5.state, 16);
+
+
+
+	int i = -1;
+	while (++i < 16)
+		ft_printf("%02x ", digest[i] & 0xFF);
+		// ft_printf("%02x ", ft_bswap8(digest[i]));
 
 }
