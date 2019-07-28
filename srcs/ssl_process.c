@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/22 15:33:30 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/28 11:39:35 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,24 @@
 static void		read_stdin(t_data *ssl_data)
 {
 	char		*str;
+	char		*tmp;
+	int			len;
 	t_lststr	*stdin;
 
+	len = 0;
 	while (get_next_line(0, &str) > 0) {
 		ft_add_lststr(&stdin, str);
 		ft_add_lststr(&stdin, "\n");
+		len += ft_strlen(str) + 1;
 	}
-	str = ft_merge_lststr(stdin);
-	ft_lstadd(&(ssl_data->files_content), ft_lstnew(str, ft_strlen(str)));
+	tmp = ft_merge_lststr(stdin);
+	str = ft_strnew(ALIGN64(len));
+	ft_memcpy(str, tmp, len);
+	ft_memdel((void **)&tmp);
+	ft_lstadd(&(ssl_data->files_content), ft_lstnew(str, len));
 }
 
-static t_list	*alloc_file(char *path)
+static t_list	*alloc_file(char *path, t_data *ssl_data)
 {
 	int			fd;
 	void		*ptr;
@@ -37,7 +44,7 @@ static t_list	*alloc_file(char *path)
 		return data;
 	if (fstat(fd, &buff) < 0)
 		return data;
-	ptr = mmap(0, ALIGN56(buff.st_size), PROT_WRITE, MAP_PRIVATE, fd, 0);
+	ptr = mmap(0, ALIGN64(buff.st_size), PROT_WRITE, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
 		return data;
 	data->content = ptr;
@@ -53,7 +60,7 @@ static void 	read_files(t_data *ssl_data)
 	item_file = ssl_data->files_name;
 	while (item_file)
 	{
-		lstnew = alloc_file(item_file->str);
+		lstnew = alloc_file(item_file->str, ssl_data);
 		ft_lstadd(&(ssl_data->files_content), lstnew);
 		item_file = item_file->next;
 	}
