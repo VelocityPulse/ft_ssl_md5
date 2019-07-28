@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/16 18:41:31 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/28 11:47:02 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_bool	handle_hash_option(char *arg, t_data *ssl_data)
 {
 	if (ft_strequ(arg, "-md5"))
 		ssl_data->hash_flag = T_MD5;
-	else if (ft_strequ(arg, "-sha256"))
+	else if (ft_strequ(arg, "-sha256") || ft_strequ(arg, "-sha2"))
 		ssl_data->hash_flag = T_SHA256;
 	else
 		return false;
@@ -71,12 +71,14 @@ int		main(int argc, char **argv)
 	{
 		get_content(&ssl_data);
 		content = ssl_data.files_content;
-		while (content)	
+		while (content)
 		{
 			if (content->content == NULL)
 				ft_printf("failed to read\n");
 			else if (ssl_data.hash_flag == T_MD5)
-				ft_md5_handle(&ssl_data, content->content, content->content_size);
+				ft_md5(&ssl_data, content->content, content->content_size);
+			else if (ssl_data.hash_flag == T_SHA256)
+				ft_sha2(&ssl_data, content->content, content->content_size);
 
 			content = content->next;
 		}

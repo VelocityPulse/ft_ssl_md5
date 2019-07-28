@@ -6,13 +6,14 @@
 #    By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/21 12:14:25 by cchameyr          #+#    #+#              #
-#    Updated: 2019/07/10 17:00:38 by cchameyr         ###   ########.fr        #
+#    Updated: 2019/07/28 10:33:22 by cchameyr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 FILES =				main.c \
 					md5.c \
-					ssl_process.c
+					ssl_process.c \
+					sha2.c
 
 SRCS =				$(addprefix srcs/, $(FILES))
 

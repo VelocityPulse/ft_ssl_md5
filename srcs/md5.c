@@ -6,64 +6,20 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/22 15:28:52 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/28 18:51:47 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incl/header.h"
 
-void bitscounter_uint32(int len)
-{
-	ft_printf("bytes for %d int32 = %d soit %dbits\n", len, sizeof(uint32_t) * len, sizeof(uint32_t) * len * 8);
-}
-
-void bitscounter_char(char *str)
-{
-	ft_printf("bytes for string str = %d soit %dbits\n", sizeof(char) * ft_strlen(str), sizeof(char) * ft_strlen(str) * 8);
-}
-
-void unitest_putmem(void const *p, int len)
-{
-	int i = 0;
-	unsigned char *t;
-
-	t = (unsigned char *)p;
-	i = 0;
-	while (i++ < len)
-		ft_printf(" %.2x", t[i]);
-	ft_printf("\n");
-}
-
-void printBits(void const * const ptr, size_t size)
-{
-    unsigned char *b = (unsigned char*) ptr;
-    unsigned char byte;
-    int i, j;
-
-    for (i = 0; i < size; i++)
-    {
-		if (i != 0)
-			ft_printf(" ");
-		if (!(i % 8) && i != 0)
-			ft_printf("\n");
-		ft_printf("[%03d]", i);
-        for (j = 7; j >= 0; j--)
-        {
-            byte = (b[i] >> j) & 1;
-            ft_printf("%u", byte);
-        }
-    }
-    ft_printf("\n\n");
-}
-
-static const uint32_t	g_s[64] = {
+static const uint32_t	g_s_md5[64] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, \
 	5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, \
 	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, \
 	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 };
 
-static const uint32_t	g_k[64] = {
+static const uint32_t	g_k_md5[64] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a, \
 	0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be, \
 	0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821, 0xf61e2562, 0xc040b340, \
@@ -116,11 +72,11 @@ static void		ft_md5_processing(t_md5 *md5, int i)
 		md5->f = md5->c ^ (md5->b | (~md5->d));
 		md5->g = (7 * i) % 16;
 	}
-	md5->f = md5->f + md5->a + g_k[i] + md5->buff[md5->g];
+	md5->f = md5->f + md5->a + g_k_md5[i] + md5->buff[md5->g];
 	md5->a = md5->d;
 	md5->d = md5->c;
 	md5->c = md5->b;
-	md5->b = md5->b + ft_b32rotate_left(md5->f, g_s[i]);
+	md5->b = md5->b + ft_b32rotate_left(md5->f, g_s_md5[i]);
 }
 
 static void		ft_md5_loop(char *str, t_md5 *md5)
@@ -150,7 +106,7 @@ static void		ft_md5_loop(char *str, t_md5 *md5)
 	}
 }
 
-void		ft_md5_handle(t_data *ssl_data, char *str, int len)
+void		ft_md5(t_data *ssl_data, char *str, int len)
 {
 	t_md5	md5;
 	char digest[16] = {0};
@@ -161,5 +117,6 @@ void		ft_md5_handle(t_data *ssl_data, char *str, int len)
 	ft_memcpy(digest, md5.state, 16);
 	int i = -1;
 	while (++i < 16)
-		ft_printf("%02x ", digest[i] & 0xFF);
+		ft_printf("%02x", digest[i] & 0xFF);
+	ft_putchar('\n');
 }

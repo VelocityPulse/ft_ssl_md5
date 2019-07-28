@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/22 15:27:55 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/28 11:46:06 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,14 @@ typedef struct	s_md5
 	uint32_t	g;
 }				t_md5;
 
-void		ft_md5_handle(t_data *ssl_data, char *str, int len);
+typedef struct	s_sha2
+{
+	uint32_t	state[8];
+
+}				t_sha2;
+
+void		ft_md5(t_data *ssl_data, char *str, int len);
+void		ft_sha2(t_data *ssl_data, char *str, int len);
 
 void		get_content(t_data *ssl_data);
 
