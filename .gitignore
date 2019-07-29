@@ -1,4 +1,5 @@
 ft_ssl
+test/a*
 *.o
 *.a
 /objs

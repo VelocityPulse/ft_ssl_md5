@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/28 11:47:02 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/28 23:06:26 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int		main(int argc, char **argv)
 		content = ssl_data.files_content;
 		while (content)
 		{
+			
 			if (content->content == NULL)
 				ft_printf("failed to read\n");
 			else if (ssl_data.hash_flag == T_MD5)
