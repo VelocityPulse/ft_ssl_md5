@@ -8,7 +8,7 @@ int main()
 	char a[100000] = {0};
 	int i = 0;
 
-	while (i < 450)
+	while (1)
 	{
 		a[i] = 'q';
 		sprintf(command, "echo %s > a%d", a, i + 1);

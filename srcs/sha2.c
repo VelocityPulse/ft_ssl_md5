@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/28 12:09:37 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/29 14:52:36 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,14 @@ static void printBits(void const * const ptr, size_t size)
         }
     }
     ft_printf("\n\n");
+}
+
+static void print_binary(int number)
+{
+    if (number) {
+        print_binary(number >> 1);
+		ft_putchar((number & 1) ? '1' : '0');
+    }
 }
 
 static const uint32_t	g_k_sha2[64] = {

@@ -6,41 +6,11 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/29 14:25:22 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/29 14:58:24 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incl/header.h"
-
-static void printBits(void const * const ptr, size_t size)
-{
-    unsigned char *b = (unsigned char*) ptr;
-    unsigned char byte;
-    int i, j;
-
-    for (i = 0; i < size; i++)
-    {
-		if (i != 0)
-			ft_printf(" ");
-		if (!(i % 8) && i != 0)
-			ft_printf("\n");
-		ft_printf("[%03d]", i);
-        for (j = 7; j >= 0; j--)
-        {
-            byte = (b[i] >> j) & 1;
-            ft_printf("%u", byte);
-        }
-    }
-    ft_printf("\n\n");
-}
-
-void print_binary(int number)
-{
-    if (number) {
-        print_binary(number >> 1);
-		ft_putchar((number & 1) ? '1' : '0');
-    }
-}
 
 static const uint32_t	g_s_md5[64] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, \
@@ -63,24 +33,18 @@ static const uint32_t	g_k_md5[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-int blockalign56(int size);
-
 static void		ft_md5_init_padding(char *s, int len, t_md5 *md5)
 {
 	md5->state[0] = 0x67452301;
 	md5->state[1] = 0xefcdab89;
 	md5->state[2] = 0x98badcfe;
 	md5->state[3] = 0x10325476;
-	md5->aligned56 = blockalign56(len);
+	md5->aligned56 = block_align56(len);
 	md5->aligned64 = ALIGN64(md5->aligned56);
-	// ft_printf("len : %d\nalign56 : %d\nalign64 : %d\n", len, md5->aligned56, md5->aligned64);
 	ft_bzero(md5->buff, 64);
 
-	// setting padding
 	s[len] = -128;
-	//little endian
 	((uint64_t *)s)[md5->aligned64 / 8 - 1] = len * 8;
-	// printBits(s, md5->aligned64);
 }
 
 static void		ft_md5_processing(t_md5 *md5, int i)

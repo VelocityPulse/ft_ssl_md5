@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/29 13:57:58 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/29 14:53:00 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ typedef struct	s_sha2
 void		ft_md5(t_data *ssl_data, char *str, int len);
 void		ft_sha2(t_data *ssl_data, char *str, int len);
 
+int			block_align56(int size);
 void		get_content(t_data *ssl_data);
 
 #endif
