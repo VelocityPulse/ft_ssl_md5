@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/29 14:53:00 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/29 16:47:16 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@
 # define BLOCK_BYTE 64
 # define ALIGN56(SIZE) (((SIZE - 1) + MOD_BYTE) - ((SIZE - 1) % MOD_BYTE))
 # define ALIGN64(SIZE) (((SIZE - 1) + BLOCK_BYTE) - ((SIZE - 1) % BLOCK_BYTE))
+
+# define SHA2_BLOCK_BYTE 256
+# define SHA2_BLOCK_BITS 2048
 
 typedef enum	e_hashflag
 {
@@ -62,8 +65,26 @@ typedef struct	s_md5
 
 typedef struct	s_sha2
 {
+	uint32_t	buff[64];
 	uint32_t	state[8];
-
+	int			aligned56;
+	int			aligned64;
+	int			s0;
+	int			s1;
+	int			x0;
+	int			x1;
+	int			t0;
+	int			t1;
+	int			ch;
+	int			maj;
+	uint32_t	a;
+	uint32_t	b;
+	uint32_t	c;
+	uint32_t	d;
+	uint32_t	e;
+	uint32_t	f;
+	uint32_t	g;
+	uint32_t	h;
 }				t_sha2;
 
 void		ft_md5(t_data *ssl_data, char *str, int len);

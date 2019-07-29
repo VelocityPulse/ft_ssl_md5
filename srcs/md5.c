@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/29 14:58:24 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/29 15:56:32 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,28 @@ static const uint32_t	g_k_md5[64] = {
 	0xffeff47d, 0x85845dd1, 0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1, \
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
+
+static void printBits(void const * const ptr, size_t size)
+{
+    unsigned char *b = (unsigned char*) ptr;
+    unsigned char byte;
+    int i, j;
+
+    for (i = 0; i < size; i++)
+    {
+		if (i != 0)
+			ft_printf(" ");
+		if (!(i % 8) && i != 0)
+			ft_printf("\n");
+		ft_printf("[%03d]", i);
+        for (j = 7; j >= 0; j--)
+        {
+            byte = (b[i] >> j) & 1;
+            ft_printf("%u", byte);
+        }
+    }
+    ft_printf("\n\n");
+}
 
 static void		ft_md5_init_padding(char *s, int len, t_md5 *md5)
 {
@@ -87,6 +109,8 @@ static void		ft_md5_loop(char *str, t_md5 *md5)
 	{
 		ft_memcpy((void *)md5->buff, str + (64 * block++), 64);
 		rest -= BLOCK_BITS;
+
+		// printBits(md5->buff, BLOCK_BYTE);
 
 		md5->a = md5->state[0];
 		md5->b = md5->state[1];
