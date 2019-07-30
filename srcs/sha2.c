@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/29 23:32:08 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/30 17:02:54 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,12 @@ static void		ft_sha2_init_padding(char *s, int len, t_sha2 *sha2)
 	sha2->aligned64 = ALIGN64(sha2->aligned56);
 	ft_bzero(sha2->buff, 64 * 4);
 
+	// printBits(sha2->buff, 64 * 4);
 
-	s[len] = 1; // big endian
-	// s[len] = -128;
-	// ((uint64_t *)s)[sha2->aligned64 / 8 - 1] = len * 8;
-	((uint64_t *)s)[sha2->aligned64 / 8 - 1] = ft_bswap64(len * 8); // big endian
+	// s[len] = 1; // big endian
+	s[len] = -128;
+	// ((uint64_t *)s)[sha2->aligned64 / 8 - 1] = ft_bswap64(len * 8); // big endian
+	((uint32_t *)s)[sha2->aligned64 / 4 - 1] = len * 8;
 
 	// printBits(s, sha2->aligned64);
 }
@@ -115,21 +116,24 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
  		// ft_printf("rest : %d\n", rest);
 
 		ft_memcpy((void *)sha2->buff, str + (64 * block++), 64);
+		for (size_t i = 0; i < 15; i++) {
+			sha2->buff[i] = ft_bswap32(sha2->buff[i]);
+		}
 
 		// printBits(str, sha2->aligned64);
-		printBits(sha2->buff, BLOCK_BYTE);
+		// printBits(sha2->buff, BLOCK_BYTE);
 		rest -= BLOCK_BITS;
 
 		int i = 15;
 		while (++i < 64)
 		{
-			sha2->s0 = (ft_b32rotate_right(sha2->buff[i - 15], 7)) ^
-				(ft_b32rotate_right(sha2->buff[i - 15], 18)) ^
+			sha2->s0 = ft_b32rotate_right(sha2->buff[i - 15], 7) ^
+				ft_b32rotate_right(sha2->buff[i - 15], 18) ^
 				(sha2->buff[i - 15] >> 3);
 			//s0 := (w[i-15] rightrotate  7) xor (w[i-15] rightrotate 18) xor (w[i-15] rightshift  3)
 
-			sha2->s1 = (ft_b32rotate_right(sha2->buff[i - 2], 17)) ^
-				(ft_b32rotate_right(sha2->buff[i - 2], 19)) ^
+			sha2->s1 = ft_b32rotate_right(sha2->buff[i - 2], 17) ^
+				ft_b32rotate_right(sha2->buff[i - 2], 19) ^
 				(sha2->buff[i - 2] >> 10);
 			//s1 := (w[i- 2] rightrotate 17) xor (w[i- 2] rightrotate 19) xor (w[i- 2] rightshift 10)
 
@@ -138,6 +142,8 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
 				+ sha2->buff[i - 7]
 				+ sha2->s1;
 			//w[i] := w[i-16] + s0 + w[i-7] + s1
+			 // printBits(sha2->buff, SHA2_BLOCK_BYTE);
+
 		}
 
 		sha2->a = sha2->state[0];
@@ -161,8 +167,8 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
 			sha2->ch = (sha2->e & sha2->f) ^ ((~sha2->e) & sha2->g);
 			// ch := (e and f) xor ((not e) and g)
 
-			sha2->t0 = sha2->h + sha2->x1 + sha2->ch + g_k_sha2[i] + sha2->buff[i];
-			// temp0 := h + x1 + ch + k[i] + w[i]
+			sha2->t1 = sha2->h + sha2->x1 + sha2->ch + g_k_sha2[i] + sha2->buff[i];
+			// temp1 := h      + x1       + ch       + k[i]        + w[i]
 
 			sha2->x0 = (ft_b32rotate_right(sha2->a, 2)) ^
 				(ft_b32rotate_right(sha2->a, 13)) ^
@@ -172,17 +178,17 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
 			sha2->maj = (sha2->a & sha2->b) ^ (sha2->a & sha2->c) ^ (sha2->b & sha2->c);
 			// maj := (a and b) xor (a and c) xor (b and c)
 
-			sha2->t1 = sha2->x0 + sha2->maj;
-			// temp1 := x0 + maj
+			sha2->t2 = sha2->x0 + sha2->maj;
+			// temp2 := x0 + maj
 
 			sha2->h = sha2->g;
 			sha2->g = sha2->f;
 			sha2->f = sha2->e;
-			sha2->e = sha2->d + sha2->t0;
+			sha2->e = sha2->d + sha2->t1;
 			sha2->d = sha2->c;
 			sha2->c = sha2->b;
 			sha2->b = sha2->a;
-			sha2->a = sha2->t0 + sha2->t1;
+			sha2->a = sha2->t1 + sha2->t2;
 			// h := g
 			// g := f
 			// f := e
@@ -191,7 +197,10 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
 			// c := b
 			// b := a
 			// a := temp1 + temp2
+			// printBits(&sha2->a, 32);
 		}
+
+
 
 		sha2->state[0] += sha2->a;
 		sha2->state[1] += sha2->b;
@@ -201,7 +210,6 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
 		sha2->state[5] += sha2->f;
 		sha2->state[6] += sha2->g;
 		sha2->state[7] += sha2->h;
-
 	}
 }
 
@@ -213,6 +221,10 @@ void			ft_sha2(t_data *ssl_data, char *str, int len)
 	ft_sha2_init_padding(str, len, &sha2);
 	ft_printf("len : %d\n", len);
 	ft_sha2_loop(str, &sha2);
+
+	for (size_t i = 0; i < 8; i++) {
+		sha2.state[i] = ft_bswap32(sha2.state[i]);
+	}
 
 	ft_memcpy(digest, sha2.state, 32);
 	int i = -1;

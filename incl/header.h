@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/29 16:47:16 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/30 00:32:52 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ typedef struct	s_sha2
 	int			s1;
 	int			x0;
 	int			x1;
-	int			t0;
 	int			t1;
+	int			t2;
 	int			ch;
 	int			maj;
 	uint32_t	a;

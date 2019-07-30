@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/29 14:53:13 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/30 01:07:35 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int				block_align56(int size)
 {
-	int a;
+	int a; // segfault sur une lecture d'un touch
 
 	a = ALIGN64(size);
 	if (size >= a - 8)
