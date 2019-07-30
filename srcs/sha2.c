@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/30 17:10:25 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/30 18:02:19 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,13 @@ static void		ft_sha2_init_padding(char *s, int len, t_sha2 *sha2)
 
 	// printBits(sha2->buff, 64 * 4);
 
+	// s[len] = 1;
 	s[len] = -128; // little-endian
+
+	for (size_t i = 0; i < sha2->aligned64; i++) {
+		((uint32_t *)s)[i] = ft_bswap32(((uint32_t *)s)[i]);
+	}
+
 	((uint32_t *)s)[sha2->aligned64 / 4 - 1] = len * 8; // little endian
 
 	// printBits(s, sha2->aligned64);
@@ -113,9 +119,11 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
  		// ft_printf("rest : %d\n", rest);
 
 		ft_memcpy((void *)sha2->buff, str + (64 * block++), 64);
-		for (size_t i = 0; i < 15; i++) {
-			sha2->buff[i] = ft_bswap32(sha2->buff[i]);
-		}
+
+		// for (size_t i = 0; i < 15; i++) {
+		// 	sha2->buff[i] = ft_bswap32(sha2->buff[i]);
+		// }
+
 
 		// printBits(str, sha2->aligned64);
 		// printBits(sha2->buff, BLOCK_BYTE);
@@ -193,7 +201,6 @@ void			ft_sha2(t_data *ssl_data, char *str, int len)
 	char	digest[32] = {0};
 
 	ft_sha2_init_padding(str, len, &sha2);
-	ft_printf("len : %d\n", len);
 	ft_sha2_loop(str, &sha2);
 
 	for (size_t i = 0; i < 8; i++) {
