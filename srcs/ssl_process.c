@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 14:07:28 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 14:10:37 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static t_list	*alloc_file(char *path, t_data *ssl_data)
 		return data;
 	if (fstat(fd, &buff) < 0)
 		return data;
-	// ft_printf("st_size : %d\naligned56 : %d\n", buff.st_size, block_align64(buff.st_size));
 	if (buff.st_size == 0)
 		ptr = ft_memalloc(block_align64(buff.st_size));
 	else
