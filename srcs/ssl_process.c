@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 14:10:37 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 15:30:25 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static void		read_stdin(t_data *ssl_data)
 	t_lststr	*stdin;
 
 	len = 0;
+	stdin = NULL;
 	while (get_next_line(0, &str) > 0)
 	{
 		ft_add_lststr(&stdin, str);
@@ -37,7 +38,7 @@ static void		read_stdin(t_data *ssl_data)
 		len += ft_strlen(str) + 1;
 	}
 	tmp = ft_merge_lststr(stdin);
-	str = ft_strnew(ALIGN64(len));
+	str = ft_strnew(block_align64(len));
 	ft_memcpy(str, tmp, len);
 	ft_memdel((void **)&tmp);
 	ft_lstadd(&(ssl_data->files_content), ft_lstnew(str, len));
