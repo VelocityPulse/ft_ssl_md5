@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 15:00:45 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 16:54:12 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
 	}
 }
 
-void			ft_sha2(t_data *ssl_data, char *str, int len)
+void			ft_sha2(char *str, int len, char *name, t_data *ssl)
 {
 	t_sha2	sha2;
 	char	digest[32] = {0};
@@ -160,10 +160,11 @@ void			ft_sha2(t_data *ssl_data, char *str, int len)
 	ft_sha2_init_padding(str, len, &sha2);
 	ft_sha2_loop(str, &sha2);
 
-	for (size_t i = 0; i < 8; i++) {
-		sha2.state[i] = ft_bswap32(sha2.state[i]);
-	}
+	if (!ssl->q_flag && name)
+		ft_printf("MD5 (%s) = ", name);
 
+	for (size_t i = 0; i < 8; i++)
+		sha2.state[i] = ft_bswap32(sha2.state[i]);
 	ft_memcpy(digest, sha2.state, 32);
 	int i = -1;
 	while (++i < 32)

@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 14:05:27 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 16:49:19 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct	s_data
 	t_bool		q_flag;
 	t_bool		r_flag;
 	t_bool		s_flag;
+	t_bin		*stdin;
 	t_lststr	*files_name;
 	t_list		*files_content;
 }				t_data;
@@ -85,8 +86,8 @@ typedef struct	s_sha2
 	uint32_t	h;
 }				t_sha2;
 
-void		ft_md5(t_data *ssl_data, char *str, int len);
-void		ft_sha2(t_data *ssl_data, char *str, int len);
+void		ft_md5(char *str, int len, char *name, t_data *ssl);
+void		ft_sha2(char *str, int len, char *name, t_data *ssl);
 
 int			block_align64(int size);
 void		get_content(t_data *ssl_data);

@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 15:30:25 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 16:41:09 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int				block_align64(int size)
 {
-	int a; // segfault sur une lecture d'un touch
+	int a;
 
 	a = ALIGN64(size);
 	if (size >= a - 8)
@@ -22,7 +22,7 @@ int				block_align64(int size)
 	return a;
 }
 
-static void		read_stdin(t_data *ssl_data)
+static void		read_stdin(t_data *ssl)
 {
 	char		*str;
 	char		*tmp;
@@ -41,10 +41,12 @@ static void		read_stdin(t_data *ssl_data)
 	str = ft_strnew(block_align64(len));
 	ft_memcpy(str, tmp, len);
 	ft_memdel((void **)&tmp);
-	ft_lstadd(&(ssl_data->files_content), ft_lstnew(str, len));
+	ssl->stdin = ft_memalloc(sizeof(t_bin));
+	ssl->stdin->data = str;
+	ssl->stdin->size = len;
 }
 
-static t_list	*alloc_file(char *path, t_data *ssl_data)
+static t_list	*alloc_file(char *path, t_data *ssl)
 {
 	int			fd;
 	void		*ptr;
@@ -67,24 +69,27 @@ static t_list	*alloc_file(char *path, t_data *ssl_data)
 	return data;
 }
 
-static void 	read_files(t_data *ssl_data)
+static void 	read_files(t_data *ssl)
 {
 	t_lststr	*item_file;
 	t_list		*lstnew;
 
-	item_file = ssl_data->files_name;
+	item_file = ssl->files_name;
 	while (item_file)
 	{
-		lstnew = alloc_file(item_file->str, ssl_data);
-		ft_lstadd(&(ssl_data->files_content), lstnew);
+		lstnew = alloc_file(item_file->str, ssl);
+		ft_lstadd(&(ssl->files_content), lstnew);
 		item_file = item_file->next;
 	}
 }
 
-void			get_content(t_data *ssl_data)
+void			get_content(t_data *ssl)
 {
-	if (ssl_data->files_name == NULL)
-		read_stdin(ssl_data);
-	else
-		read_files(ssl_data);
+	ssl->files_content = NULL;
+	ssl->stdin = NULL;
+
+	if (ssl->files_name == NULL || ssl->p_flag)
+		read_stdin(ssl);
+	if (ssl->files_name != NULL)
+		read_files(ssl);
 }

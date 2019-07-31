@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 14:06:21 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 16:54:04 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,13 +126,16 @@ static void		ft_md5_loop(char *str, t_md5 *md5)
 	}
 }
 
-void		ft_md5(t_data *ssl_data, char *str, int len)
+void		ft_md5(char *str, int len, char *name, t_data *ssl)
 {
 	t_md5	md5;
 	char digest[16] = {0};
 
 	ft_md5_init_padding(str, len, &md5);
 	ft_md5_loop(str, &md5);
+
+	if (!ssl->q_flag && name)
+		ft_printf("MD5 (%s) = ", name);
 
 	ft_memcpy(digest, md5.state, 16);
 	int i = -1;
