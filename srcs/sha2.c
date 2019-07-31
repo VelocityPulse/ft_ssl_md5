@@ -6,43 +6,11 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 16:54:12 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 17:06:40 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incl/header.h"
-
-/*
-** static void printBits(void const * const ptr, size_t size)
-** {
-**     unsigned char *b = (unsigned char*) ptr;
-**     unsigned char byte;
-**     int i, j;
-**
-**     for (i = 0; i < size; i++)
-**     {
-** 		if (i != 0)
-** 			ft_printf(" ");
-** 		if (!(i % 8) && i != 0)
-** 			ft_printf("\n");
-** 		ft_printf("[%03d]", i);
-**         for (j = 7; j >= 0; j--)
-**         {
-**             byte = (b[i] >> j) & 1;
-**             ft_printf("%u", byte);
-**         }
-**     }
-**     ft_printf("\n\n");
-** }
-**
-** static void print_binary(int number)
-** {
-**     if (number) {
-**         print_binary(number >> 1);
-** 		ft_putchar((number & 1) ? '1' : '0');
-**     }
-** }
-*/
 
 static const uint32_t	g_k_sha2[64] = {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, \
@@ -161,7 +129,7 @@ void			ft_sha2(char *str, int len, char *name, t_data *ssl)
 	ft_sha2_loop(str, &sha2);
 
 	if (!ssl->q_flag && name)
-		ft_printf("MD5 (%s) = ", name);
+		ft_printf("SHA256 (%s) = ", name);
 
 	for (size_t i = 0; i < 8; i++)
 		sha2.state[i] = ft_bswap32(sha2.state[i]);

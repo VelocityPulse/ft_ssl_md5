@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 16:54:07 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 17:32:24 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,26 @@ static t_bool	handle_hash_option(char *arg, t_data *ssl)
 	return true;
 }
 
-static t_bool	handle_param_option(char *arg, t_data *ssl)
+static t_bool	handle_param_option(int ac, char **av, int *i, t_data *ssl)
 {
-	if (ft_strequ(arg, "-p"))
+	if (ft_strequ(av[*i], "-p"))
 		ssl->p_flag = true;
-	else if (ft_strequ(arg, "-q"))
+	else if (ft_strequ(av[*i], "-q"))
 		ssl->q_flag = true;
-	else if (ft_strequ(arg, "-r"))
+	else if (ft_strequ(av[*i], "-r"))
 		ssl->r_flag = true;
-	else if (ft_strequ(arg, "-s"))
-		ssl->s_flag = true;
+	else if (ft_strequ(av[*i], "-s"))
+	{
+		if (ac - 1 <= *i)
+		{
+			ft_printf("ft_ssl: option requires an argument --s\n");
+			ft_putstr(_USAGE_);
+			(*i)++;
+		} else
+		{
+			ssl->s_flag = av[++(*i)];
+		}
+	}
 	else
 		return false;
 	return true;
@@ -50,7 +60,7 @@ static t_bool	handle_option(int ac, char **av, t_data *ssl)
 		{
 			if (handle_hash_option(av[i], ssl) == true)
 				continue;
-			if (handle_param_option(av[i], ssl) == false)
+			if (handle_param_option(ac, av, &i, ssl) == false)
 			{
 				ft_putstr(_USAGE_);
 				return false;
@@ -66,7 +76,7 @@ static t_bool	handle_option(int ac, char **av, t_data *ssl)
 void		select_hash(void *content, int size, char *name, t_data *ssl)
 {
 	if (content == NULL)
-		ft_printf("failed to read\n");
+		ft_printf("ft_ssl: %s: No such file or directory\n", name);
 	else if (ssl->hash_flag == T_MD5)
 		ft_md5(content, size, name, ssl);
 	else if (ssl->hash_flag == T_SHA256)
@@ -79,6 +89,7 @@ int			main(int argc, char **argv)
 	t_list		*content;
 	t_lststr	*files_name;
 
+	ft_bzero((void *)&ssl, sizeof(t_data));
 	if (handle_option(argc, argv, &ssl) == true)
 	{
 		get_content(&ssl);

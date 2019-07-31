@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 16:49:19 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 17:40:03 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,15 @@ typedef enum	e_hashflag
 	NB_TYPE,
 }				t_hashflag;
 
+
+
 typedef struct	s_data
 {
 	t_hashflag	hash_flag;
 	t_bool		p_flag;
 	t_bool		q_flag;
 	t_bool		r_flag;
-	t_bool		s_flag;
+	char		*s_flag;
 	t_bin		*stdin;
 	t_lststr	*files_name;
 	t_list		*files_content;
@@ -52,8 +54,8 @@ typedef struct	s_data
 
 typedef struct	s_md5
 {
-	uint32_t	buff[16]; // block 512
-	uint32_t	state[4]; // abcd 128
+	uint32_t	buff[16];
+	uint32_t	state[4];
 	int			aligned64;
 	uint32_t	a;
 	uint32_t	b;
