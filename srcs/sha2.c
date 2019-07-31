@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 17:06:40 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 19:23:04 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,16 +120,21 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
 	}
 }
 
-void			ft_sha2(char *str, int len, char *name, t_data *ssl)
+void			ft_sha2(t_content *content, t_data *ssl)
 {
 	t_sha2	sha2;
 	char	digest[32] = {0};
 
-	ft_sha2_init_padding(str, len, &sha2);
-	ft_sha2_loop(str, &sha2);
+	ft_sha2_init_padding(content->content, content->size, &sha2);
+	ft_sha2_loop(content->content, &sha2);
 
-	if (!ssl->q_flag && name)
-		ft_printf("SHA256 (%s) = ", name);
+	if (!ssl->q_flag && content->name)
+	{
+		if (content->origin == PARAM)
+			ft_printf("SHA256 (\"%s\") = ", content->name);
+		else
+			ft_printf("SHA256 (%s) = ", content->name);
+	}
 
 	for (size_t i = 0; i < 8; i++)
 		sha2.state[i] = ft_bswap32(sha2.state[i]);

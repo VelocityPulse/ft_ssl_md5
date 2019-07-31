@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 17:40:03 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 19:44:49 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,26 @@ typedef enum	e_hashflag
 	NB_TYPE,
 }				t_hashflag;
 
+typedef enum	e_origin
+{
+	STDIN,
+	PARAM,
+	FILE
+}				t_origin;
 
+typedef struct	s_content
+{
+	void		*content;
+	int			size;
+	char		*name;
+	t_origin	origin;
+}				t_content;
 
 typedef struct	s_data
 {
 	t_hashflag	hash_flag;
-	t_bool		p_flag;
 	t_bool		q_flag;
 	t_bool		r_flag;
-	char		*s_flag;
-	t_bin		*stdin;
-	t_lststr	*files_name;
-	t_list		*files_content;
 }				t_data;
 
 typedef struct	s_md5
@@ -88,10 +96,13 @@ typedef struct	s_sha2
 	uint32_t	h;
 }				t_sha2;
 
-void		ft_md5(char *str, int len, char *name, t_data *ssl);
-void		ft_sha2(char *str, int len, char *name, t_data *ssl);
+void		ft_md5(t_content *content, t_data *ssl);
+void		ft_sha2(t_content *content, t_data *ssl);
 
 int			block_align64(int size);
-void		get_content(t_data *ssl_data);
+
+t_content	*read_file(char *path);
+t_content	*read_param(char *param);
+t_content	*read_stdin(void);
 
 #endif

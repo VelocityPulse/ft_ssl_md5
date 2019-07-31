@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 16:41:09 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 19:45:01 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,33 @@ int				block_align64(int size)
 	return a;
 }
 
-static void		read_stdin(t_data *ssl)
+t_content		*read_param(char *param)
+{
+	t_content	*content;
+	char		*str;
+	int			len;
+
+	if (param == NULL)
+		return NULL;
+
+	content = (t_content *)ft_memalloc(sizeof(t_content));
+	len = ft_strlen(param);
+	str = ft_strnew(block_align64(len));
+	ft_strcpy(str, param);
+	content->content = str;
+	content->size = len;
+	content->origin = PARAM;
+	content->name = ft_strdup(param);
+	return content;
+}
+
+t_content		*read_stdin()
 {
 	char		*str;
 	char		*tmp;
 	int			len;
 	t_lststr	*stdin;
+	t_content	*content;
 
 	len = 0;
 	stdin = NULL;
@@ -41,55 +62,36 @@ static void		read_stdin(t_data *ssl)
 	str = ft_strnew(block_align64(len));
 	ft_memcpy(str, tmp, len);
 	ft_memdel((void **)&tmp);
-	ssl->stdin = ft_memalloc(sizeof(t_bin));
-	ssl->stdin->data = str;
-	ssl->stdin->size = len;
+	content = (t_content *)ft_memalloc(sizeof(t_content));
+	content->content = str;
+	content->size = len;
+	content->name = NULL;
+	content->origin = STDIN;
+	return content;
 }
 
-static t_list	*alloc_file(char *path, t_data *ssl)
+t_content		*read_file(char *path)
 {
 	int			fd;
 	void		*ptr;
 	struct stat	buff;
-	t_list		*data;
+	t_content	*content;
 
-	data = (t_list *)ft_memalloc(sizeof(t_list));
 	if ((fd = open(path, O_RDONLY)) < 0)
-		return data;
+		return NULL;
 	if (fstat(fd, &buff) < 0)
-		return data;
+		return NULL;
 	if (buff.st_size == 0)
 		ptr = ft_memalloc(block_align64(buff.st_size));
 	else
 		ptr = mmap(0, block_align64(buff.st_size), PROT_WRITE, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
-		return data;
-	data->content = ptr;
-	data->content_size = buff.st_size;
-	return data;
-}
+		return NULL;
 
-static void 	read_files(t_data *ssl)
-{
-	t_lststr	*item_file;
-	t_list		*lstnew;
-
-	item_file = ssl->files_name;
-	while (item_file)
-	{
-		lstnew = alloc_file(item_file->str, ssl);
-		ft_lstadd(&(ssl->files_content), lstnew);
-		item_file = item_file->next;
-	}
-}
-
-void			get_content(t_data *ssl)
-{
-	ssl->files_content = NULL;
-	ssl->stdin = NULL;
-
-	if (ssl->files_name == NULL || ssl->p_flag)
-		read_stdin(ssl);
-	if (ssl->files_name != NULL)
-		read_files(ssl);
+	content = (t_content *)ft_memalloc(sizeof(t_content));
+	content->content = ptr;
+	content->size = buff.st_size;
+	content->name = path;
+	content->origin = FILE;
+	return content;
 }
