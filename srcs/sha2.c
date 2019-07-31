@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/30 18:02:19 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 14:06:08 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,7 @@ static void		ft_sha2_init_padding(char *s, int len, t_sha2 *sha2)
 	sha2->state[5] = 0x9b05688c;
 	sha2->state[6] = 0x1f83d9ab;
 	sha2->state[7] = 0x5be0cd19;
-	sha2->aligned56 = block_align56(len);
-	sha2->aligned64 = ALIGN64(sha2->aligned56);
+	sha2->aligned64 = block_align64(len);
 	ft_bzero(sha2->buff, 64 * 4);
 
 	// printBits(sha2->buff, 64 * 4);
@@ -97,7 +96,8 @@ static void		ft_sha2_init_padding(char *s, int len, t_sha2 *sha2)
 	// s[len] = 1;
 	s[len] = -128; // little-endian
 
-	for (size_t i = 0; i < sha2->aligned64; i++) {
+	int number_of_turn = sha2->aligned64 / 4;
+	for (size_t i = 0; i < number_of_turn; i++) {
 		((uint32_t *)s)[i] = ft_bswap32(((uint32_t *)s)[i]);
 	}
 
@@ -213,5 +213,4 @@ void			ft_sha2(t_data *ssl_data, char *str, int len)
 		ft_printf("%02x", digest[i] & 0xFF);
 
 	ft_putchar('\n');
-
 }

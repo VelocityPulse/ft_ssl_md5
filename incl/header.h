@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/30 00:32:52 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 14:05:27 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ typedef struct	s_md5
 {
 	uint32_t	buff[16]; // block 512
 	uint32_t	state[4]; // abcd 128
-	int			aligned56;
 	int			aligned64;
 	uint32_t	a;
 	uint32_t	b;
@@ -67,7 +66,6 @@ typedef struct	s_sha2
 {
 	uint32_t	buff[64];
 	uint32_t	state[8];
-	int			aligned56;
 	int			aligned64;
 	int			s0;
 	int			s1;
@@ -90,7 +88,7 @@ typedef struct	s_sha2
 void		ft_md5(t_data *ssl_data, char *str, int len);
 void		ft_sha2(t_data *ssl_data, char *str, int len);
 
-int			block_align56(int size);
+int			block_align64(int size);
 void		get_content(t_data *ssl_data);
 
 #endif

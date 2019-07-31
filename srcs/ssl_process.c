@@ -6,20 +6,20 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/30 01:07:35 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 14:07:28 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incl/header.h"
 
-int				block_align56(int size)
+int				block_align64(int size)
 {
 	int a; // segfault sur une lecture d'un touch
 
 	a = ALIGN64(size);
 	if (size >= a - 8)
 		a += BLOCK_BYTE;
-	return a - 8;
+	return a;
 }
 
 static void		read_stdin(t_data *ssl_data)
@@ -43,8 +43,6 @@ static void		read_stdin(t_data *ssl_data)
 	ft_lstadd(&(ssl_data->files_content), ft_lstnew(str, len));
 }
 
-
-
 static t_list	*alloc_file(char *path, t_data *ssl_data)
 {
 	int			fd;
@@ -57,7 +55,11 @@ static t_list	*alloc_file(char *path, t_data *ssl_data)
 		return data;
 	if (fstat(fd, &buff) < 0)
 		return data;
-	ptr = mmap(0, block_align56(buff.st_size), PROT_WRITE, MAP_PRIVATE, fd, 0);
+	// ft_printf("st_size : %d\naligned56 : %d\n", buff.st_size, block_align64(buff.st_size));
+	if (buff.st_size == 0)
+		ptr = ft_memalloc(block_align64(buff.st_size));
+	else
+		ptr = mmap(0, block_align64(buff.st_size), PROT_WRITE, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
 		return data;
 	data->content = ptr;

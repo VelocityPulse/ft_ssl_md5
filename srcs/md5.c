@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/29 15:56:32 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 14:06:21 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,7 @@ static void		ft_md5_init_padding(char *s, int len, t_md5 *md5)
 	md5->state[1] = 0xefcdab89;
 	md5->state[2] = 0x98badcfe;
 	md5->state[3] = 0x10325476;
-	md5->aligned56 = block_align56(len);
-	md5->aligned64 = ALIGN64(md5->aligned56);
+	md5->aligned64 = block_align64(len);
 	ft_bzero(md5->buff, 64);
 
 	s[len] = -128;
