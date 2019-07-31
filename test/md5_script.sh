@@ -5,7 +5,7 @@ while true
 do
 	VAR="test/a$i"
 	echo "md5 : $i"
-	ret1=`./ft_ssl $VAR`
+	ret1=`./ft_ssl -q $VAR`
 	ret2=`md5 -q $VAR`
 	if [[ $ret1 != $ret2 ]]; then
 		echo "$ret1 DIFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!"

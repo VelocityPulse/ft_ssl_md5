@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 19:20:15 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 23:17:40 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,21 +108,23 @@ void		ft_md5(t_content *content, t_data *ssl)
 {
 	t_md5	md5;
 	char digest[16] = {0};
+	int	i;
 
 	ft_md5_init_padding(content->content, content->size, &md5);
 	ft_md5_loop(content->content, &md5);
 
-	if (!ssl->q_flag && content->name)
-	{
-		if (content->origin == PARAM)
-			ft_printf("MD5 (\"%s\") = ", content->name);
-		else
-			ft_printf("MD5 (%s) = ", content->name);
-	}
+	if (content->origin == STDIN_P)
+		ft_printf("%s\n", content->name);
+	else if (!ssl->q_flag && !ssl->r_flag)
+		parse_help(content, "MD5", ssl);
 
 	ft_memcpy(digest, md5.state, 16);
-	int i = -1;
+	i = -1;
 	while (++i < 16)
 		ft_printf("%02x", digest[i] & 0xFF);
-	ft_putchar('\n');
+
+	if (!ssl->q_flag && ssl->r_flag)
+		parse_help(content, "MD5", ssl);
+	else
+			ft_putchar('\n');
 }

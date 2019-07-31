@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 19:23:04 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 23:17:36 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,13 +128,10 @@ void			ft_sha2(t_content *content, t_data *ssl)
 	ft_sha2_init_padding(content->content, content->size, &sha2);
 	ft_sha2_loop(content->content, &sha2);
 
-	if (!ssl->q_flag && content->name)
-	{
-		if (content->origin == PARAM)
-			ft_printf("SHA256 (\"%s\") = ", content->name);
-		else
-			ft_printf("SHA256 (%s) = ", content->name);
-	}
+	if (content->origin == STDIN_P)
+		ft_printf("%s\n", content->name);
+	else if (!ssl->q_flag && !ssl->r_flag)
+		parse_help(content, "SHA256", ssl);
 
 	for (size_t i = 0; i < 8; i++)
 		sha2.state[i] = ft_bswap32(sha2.state[i]);
@@ -142,5 +139,9 @@ void			ft_sha2(t_content *content, t_data *ssl)
 	int i = -1;
 	while (++i < 32)
 		ft_printf("%02x", digest[i] & 0xFF);
-	ft_putchar('\n');
+
+	if (!ssl->q_flag && ssl->r_flag)
+			parse_help(content, "SHA256", ssl);
+	else
+		ft_putchar('\n');
 }

@@ -1,11 +1,11 @@
-i=1
+i=2000
 ret1=''
 ret2=''
 while true
 do
 	VAR="test/a$i"
-	echo "md5 : $i"
-	ret1=`./ft_ssl -sha2 $VAR`
+	echo "sha2 : $i"
+	ret1=`./ft_ssl -sha2 -q $VAR`
 	ret2=`shasum -a256 $VAR | grep -Eo '^[^ ]+'`
 	if [[ $ret1 != $ret2 ]] ; then
 		echo "$ret1 DIFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!"

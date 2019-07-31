@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 19:44:49 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 23:14:49 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ typedef enum	e_hashflag
 
 typedef enum	e_origin
 {
-	STDIN,
+	STDIN_D,
+	STDIN_P,
 	PARAM,
 	FILE
 }				t_origin;
@@ -58,6 +59,7 @@ typedef struct	s_data
 	t_hashflag	hash_flag;
 	t_bool		q_flag;
 	t_bool		r_flag;
+	int			turn;
 }				t_data;
 
 typedef struct	s_md5
@@ -103,6 +105,7 @@ int			block_align64(int size);
 
 t_content	*read_file(char *path);
 t_content	*read_param(char *param);
-t_content	*read_stdin(void);
+t_content	*read_stdin(t_origin origin);
+void		parse_help(t_content *content, char *hash, t_data *ssl);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 19:45:01 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/07/31 23:14:42 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ t_content		*read_param(char *param)
 	return content;
 }
 
-t_content		*read_stdin()
+t_content		*read_stdin(t_origin origin)
 {
 	char		*str;
 	char		*tmp;
@@ -65,8 +65,9 @@ t_content		*read_stdin()
 	content = (t_content *)ft_memalloc(sizeof(t_content));
 	content->content = str;
 	content->size = len;
-	content->name = NULL;
-	content->origin = STDIN;
+	content->name = ft_strdup(str);
+	content->origin = origin;
+	content->name[len - 1] = 0;
 	return content;
 }
 
@@ -94,4 +95,21 @@ t_content		*read_file(char *path)
 	content->name = path;
 	content->origin = FILE;
 	return content;
+}
+
+void		parse_help(t_content *content, char *hash, t_data *ssl)
+{
+	if (!ssl->r_flag)
+	{
+		if (content->origin == PARAM)
+			ft_printf("%s (\"%s\") = ", hash, content->name);
+		else if (content->origin == FILE)
+			ft_printf("%s (%s) = ", hash, content->name);
+	} else
+	{
+		if (content->origin == PARAM)
+			ft_printf(" \"%s\"\n", content->name);
+		else if (content->origin == FILE)
+			ft_printf(" %s\n", content->name);
+	}
 }
