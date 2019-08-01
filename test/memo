@@ -1,2 +1,5 @@
 sudo openssl sha256 /usr/bin/* | grep -oE '[^ ]+$' > a
 sudo ./ft_ssl -sha2 -q /usr/bin/*
+
+42 : 
+openssl dgst -sha256 /bin/* | grep -oE '[^ ]+$'

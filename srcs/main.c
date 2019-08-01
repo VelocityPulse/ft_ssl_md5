@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 22:53:25 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/01 13:13:12 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 static void		select_hash(t_content *content, t_data *ssl)
 {
 	ssl->turn++;
-
 	if (content == NULL)
 		ft_printf("ft_ssl: %s: No such file or directory\n", content->name);
 	else if (ssl->hash_flag == T_MD5)
@@ -31,8 +30,8 @@ static t_bool	handle_hash_option(char *arg, t_data *ssl)
 	else if (ft_strequ(arg, "-sha256") || ft_strequ(arg, "-sha2"))
 		ssl->hash_flag = T_SHA256;
 	else
-		return false;
-	return true;
+		return (false);
+	return (true);
 }
 
 static t_bool	handle_param_option(int ac, char **av, int *i, t_data *ssl)
@@ -55,9 +54,9 @@ static t_bool	handle_param_option(int ac, char **av, int *i, t_data *ssl)
 	else
 	{
 		ft_putstr(_USAGE_);
-		return false;
+		return (false);
 	}
-	return true;
+	return (true);
 }
 
 static t_bool	handle_option(int ac, char **av, t_data *ssl)
@@ -68,10 +67,10 @@ static t_bool	handle_option(int ac, char **av, t_data *ssl)
 	i = 0;
 	while (++i < ac && av[i][0] == '-')
 	{
-			if (handle_hash_option(av[i], ssl) == true)
-				continue;
-			if (handle_param_option(ac, av, &i, ssl) == false)
-				return false;
+		if (handle_hash_option(av[i], ssl) == true)
+			continue;
+		if (handle_param_option(ac, av, &i, ssl) == false)
+			return (false);
 	}
 	i--;
 	while (++i < ac)
@@ -81,10 +80,10 @@ static t_bool	handle_option(int ac, char **av, t_data *ssl)
 		else
 			select_hash(content, ssl);
 	}
-	return true;
+	return (true);
 }
 
-int			main(int argc, char **argv)
+int				main(int argc, char **argv)
 {
 	t_data		ssl;
 //leaks

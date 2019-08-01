@@ -6,11 +6,12 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 23:14:49 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/01 13:10:29 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_HEADER_H
+# define FT_HEADER_H
 
 # include "../libft/libft.h"
 # include <stdlib.h>
@@ -98,14 +99,14 @@ typedef struct	s_sha2
 	uint32_t	h;
 }				t_sha2;
 
-void		ft_md5(t_content *content, t_data *ssl);
-void		ft_sha2(t_content *content, t_data *ssl);
+void			ft_md5(t_content *content, t_data *ssl);
+void			ft_sha2(t_content *content, t_data *ssl);
 
-int			block_align64(int size);
+int				block_align64(int size);
 
-t_content	*read_file(char *path);
-t_content	*read_param(char *param);
-t_content	*read_stdin(t_origin origin);
-void		parse_help(t_content *content, char *hash, t_data *ssl);
+t_content		*read_file(char *path);
+t_content		*read_param(char *param);
+t_content		*read_stdin(t_origin origin);
+void			parse_help(t_content *content, char *hash, t_data *ssl);
 
 #endif

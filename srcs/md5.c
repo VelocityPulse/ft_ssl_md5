@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 23:17:40 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/01 13:17:32 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static const uint32_t	g_k_md5[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-static void		ft_md5_init_padding(char *s, int len, t_md5 *md5)
+static void				ft_md5_init_padding(char *s, int len, t_md5 *md5)
 {
 	md5->state[0] = 0x67452301;
 	md5->state[1] = 0xefcdab89;
@@ -41,12 +41,11 @@ static void		ft_md5_init_padding(char *s, int len, t_md5 *md5)
 	md5->state[3] = 0x10325476;
 	md5->aligned64 = block_align64(len);
 	ft_bzero(md5->buff, 64);
-
 	s[len] = -128;
 	((uint64_t *)s)[md5->aligned64 / 8 - 1] = len * 8;
 }
 
-static void		ft_md5_processing(t_md5 *md5, int i)
+static void				ft_md5_processing(t_md5 *md5, int i)
 {
 	if (i < 16)
 	{
@@ -75,25 +74,19 @@ static void		ft_md5_processing(t_md5 *md5, int i)
 	md5->b = md5->b + ft_b32rotate_left(md5->f, g_s_md5[i]);
 }
 
-static void		ft_md5_loop(char *str, t_md5 *md5)
+static void				ft_md5_loop(char *str, t_md5 *md5)
 {
-	int rest;
-	int block = 0;
-	int i;
+	int		rest;
+	int		block;
+	int		i;
 
+	block = 0;
 	rest = md5->aligned64 * 8;
 	while (rest > 0)
 	{
 		ft_memcpy((void *)md5->buff, str + (64 * block++), 64);
 		rest -= BLOCK_BITS;
-
-		// printBits(md5->buff, BLOCK_BYTE);
-
-		md5->a = md5->state[0];
-		md5->b = md5->state[1];
-		md5->c = md5->state[2];
-		md5->d = md5->state[3];
-
+		ft_memcpy(&md5->a, md5->state, 4 * 8);
 		i = -1;
 		while (++i < 64)
 			ft_md5_processing(md5, i);
@@ -104,27 +97,25 @@ static void		ft_md5_loop(char *str, t_md5 *md5)
 	}
 }
 
-void		ft_md5(t_content *content, t_data *ssl)
+void					ft_md5(t_content *content, t_data *ssl)
 {
 	t_md5	md5;
-	char digest[16] = {0};
-	int	i;
+	char	digest[16];
+	int		i;
 
+	ft_bzero(digest, 16);
 	ft_md5_init_padding(content->content, content->size, &md5);
 	ft_md5_loop(content->content, &md5);
-
 	if (content->origin == STDIN_P)
 		ft_printf("%s\n", content->name);
 	else if (!ssl->q_flag && !ssl->r_flag)
 		parse_help(content, "MD5", ssl);
-
 	ft_memcpy(digest, md5.state, 16);
 	i = -1;
 	while (++i < 16)
 		ft_printf("%02x", digest[i] & 0xFF);
-
 	if (!ssl->q_flag && ssl->r_flag)
 		parse_help(content, "MD5", ssl);
 	else
-			ft_putchar('\n');
+		ft_putchar('\n');
 }

@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/07/31 23:17:36 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/01 13:25:56 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,11 @@ static const uint32_t	g_k_sha2[64] = {
 	0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static void		ft_sha2_init_padding(char *s, int len, t_sha2 *sha2)
+static void				ft_sha2_init_padding(char *s, int len, t_sha2 *sha2)
 {
+	int		i;
+	int		lenght32;
+
 	sha2->state[0] = 0x6a09e667;
 	sha2->state[1] = 0xbb67ae85;
 	sha2->state[2] = 0x3c6ef372;
@@ -38,17 +41,16 @@ static void		ft_sha2_init_padding(char *s, int len, t_sha2 *sha2)
 	sha2->state[7] = 0x5be0cd19;
 	sha2->aligned64 = block_align64(len);
 	ft_bzero(sha2->buff, 64 * 4);
-
 	s[len] = -128;
-
-	for (size_t i = 0; i < sha2->aligned64 / 4; i++)
+	lenght32 = sha2->aligned64 / 4;
+	i = -1;
+	while (++i < lenght32)
 		((uint32_t *)s)[i] = ft_bswap32(((uint32_t *)s)[i]);
-
 	((uint32_t *)s)[sha2->aligned64 / 4 - 1] = len * 8;
 }
 
-static void		ft_sha2_core_message(uint32_t *buff, char *str, int *block,
-								t_sha2 *sha2)
+static void				ft_sha2_core_message(uint32_t *buff, char *str,
+		int *block, t_sha2 *sha2)
 {
 	int		i;
 
@@ -57,20 +59,17 @@ static void		ft_sha2_core_message(uint32_t *buff, char *str, int *block,
 	while (++i < 64)
 	{
 		sha2->s0 = ft_b32rotate_right(buff[i - 15], 7) ^
-		ft_b32rotate_right(buff[i - 15], 18) ^ (buff[i - 15] >> 3);
-
+			ft_b32rotate_right(buff[i - 15], 18) ^ (buff[i - 15] >> 3);
 		sha2->s1 = ft_b32rotate_right(buff[i - 2], 17) ^
 			ft_b32rotate_right(buff[i - 2], 19) ^ (buff[i - 2] >> 10);
-
 		buff[i] = buff[i - 16] + sha2->s0 + buff[i - 7] + sha2->s1;
 	}
-
 	ft_memcpy(&sha2->a, sha2->state, 8 * 4);
 }
 
-static void		ft_sha2_core(t_sha2 *s)
+static void				ft_sha2_core(t_sha2 *s)
 {
-	int i;
+	int		i;
 
 	i = -1;
 	while (++i < 64)
@@ -83,7 +82,6 @@ static void		ft_sha2_core(t_sha2 *s)
 			ft_b32rotate_right(s->a, 13) ^ ft_b32rotate_right(s->a, 22);
 		s->maj = (s->a & s->b) ^ (s->a & s->c) ^ (s->b & s->c);
 		s->t2 = s->x0 + s->maj;
-
 		s->h = s->g;
 		s->g = s->f;
 		s->f = s->e;
@@ -95,18 +93,16 @@ static void		ft_sha2_core(t_sha2 *s)
 	}
 }
 
-static void		ft_sha2_loop(char *str, t_sha2 *sha2)
+static void				ft_sha2_loop(char *str, t_sha2 *sha2)
 {
-	int	rest;
-	int	block;
+	int		rest;
+	int		block;
 
 	rest = sha2->aligned64 * 8;
 	block = 0;
-
 	while (rest > 0)
 	{
 		rest -= BLOCK_BITS;
-
 		ft_sha2_core_message(sha2->buff, str, &block, sha2);
 		ft_sha2_core(sha2);
 		sha2->state[0] += sha2->a;
@@ -120,28 +116,28 @@ static void		ft_sha2_loop(char *str, t_sha2 *sha2)
 	}
 }
 
-void			ft_sha2(t_content *content, t_data *ssl)
+void					ft_sha2(t_content *content, t_data *ssl)
 {
 	t_sha2	sha2;
-	char	digest[32] = {0};
+	int		i;
+	char	digest[32];
 
+	ft_bzero(digest, 32);
 	ft_sha2_init_padding(content->content, content->size, &sha2);
 	ft_sha2_loop(content->content, &sha2);
-
 	if (content->origin == STDIN_P)
 		ft_printf("%s\n", content->name);
 	else if (!ssl->q_flag && !ssl->r_flag)
 		parse_help(content, "SHA256", ssl);
-
-	for (size_t i = 0; i < 8; i++)
+	i = -1;
+	while (++i < 8)
 		sha2.state[i] = ft_bswap32(sha2.state[i]);
 	ft_memcpy(digest, sha2.state, 32);
-	int i = -1;
+	i = -1;
 	while (++i < 32)
 		ft_printf("%02x", digest[i] & 0xFF);
-
 	if (!ssl->q_flag && ssl->r_flag)
-			parse_help(content, "SHA256", ssl);
+		parse_help(content, "SHA256", ssl);
 	else
 		ft_putchar('\n');
 }
