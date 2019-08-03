@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/01 13:17:32 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/03 19:05:39 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ static void				ft_md5_loop(char *str, t_md5 *md5)
 	rest = md5->aligned64 * 8;
 	while (rest > 0)
 	{
-		ft_memcpy((void *)md5->buff, str + (64 * block++), 64);
 		rest -= BLOCK_BITS;
-		ft_memcpy(&md5->a, md5->state, 4 * 8);
+		ft_memcpy((void *)md5->buff, str + (64 * block++), 64);
+		ft_memcpy(&md5->a, md5->state, 4 * 4);
 		i = -1;
 		while (++i < 64)
 			ft_md5_processing(md5, i);
