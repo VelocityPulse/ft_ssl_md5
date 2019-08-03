@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/03 18:48:23 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/03 22:07:20 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,27 @@
 
 static void		select_hash(t_content *content, t_data *ssl)
 {
-	ssl->turn++;
 	if (content == NULL)
 		ft_printf("ft_ssl: %s: No such file or directory\n", content->name);
 	else if (ssl->hash_flag == T_MD5)
 		ft_md5(content, ssl);
 	else if (ssl->hash_flag == T_SHA256)
 		ft_sha2(content, ssl);
+
+	if (content->origin == FILE)
+	{
+		if (content->size == 0)
+			ft_memdel((void **)&content->content);
+		else
+			munmap(content->content, content->size);
+	}
+	else if (content->origin == STDIN_D || content->origin == STDIN_P ||
+		content->origin == PARAM)
+	{
+		ft_memdel((void **)&content->content);
+		ft_memdel((void **)&content->name);
+	}
+	ft_memdel((void *)&content);
 }
 
 static t_bool	handle_hash_option(char *arg, t_data *ssl)
@@ -34,7 +48,7 @@ static t_bool	handle_hash_option(char *arg, t_data *ssl)
 	return (true);
 }
 
-static t_bool	handle_param_option(int ac, char **av, int *i, t_data *ssl)
+static t_bool	handle_param_option(char **av, int *i, t_data *ssl)
 {
 	t_content	*content;
 
@@ -69,7 +83,7 @@ static t_bool	handle_option(int ac, char **av, t_data *ssl)
 	{
 		if (handle_hash_option(av[i], ssl) == true)
 			continue;
-		if (handle_param_option(ac, av, &i, ssl) == false)
+		if (handle_param_option(av, &i, ssl) == false)
 			return (false);
 	}
 	i--;
@@ -86,10 +100,13 @@ static t_bool	handle_option(int ac, char **av, t_data *ssl)
 int				main(int argc, char **argv)
 {
 	t_data		ssl;
-//leaks
+
 	ft_bzero((void *)&ssl, sizeof(t_data));
-	handle_option(argc, argv, &ssl);
-	if (ssl.turn == 0)
+	if (argc == 1)
+	{
 		select_hash(read_stdin(STDIN_D), &ssl);
+		return 0;
+	}
+	handle_option(argc, argv, &ssl);
 	return (0);
 }

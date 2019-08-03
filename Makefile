@@ -6,7 +6,7 @@
 #    By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/21 12:14:25 by cchameyr          #+#    #+#              #
-#    Updated: 2019/08/03 18:44:00 by cchameyr         ###   ########.fr        #
+#    Updated: 2019/08/03 22:06:50 by cchameyr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ LIBFT =				libft/libft.a
 
 #DEBUGSEGFAULT =		-g3 -fsanitize=address
 
-FLAGS =				#-Wall -Wextra -Werror
+FLAGS =				-Wall -Wextra -Werror
 
 RM =				rm -rf
 

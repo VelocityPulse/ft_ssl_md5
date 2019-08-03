@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/01 13:10:29 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/03 20:50:32 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <stdint.h>
 # include <fcntl.h>
+# include <unistd.h>
 # include <sys/stat.h>
 # include <sys/mman.h>
 
@@ -60,7 +61,6 @@ typedef struct	s_data
 	t_hashflag	hash_flag;
 	t_bool		q_flag;
 	t_bool		r_flag;
-	int			turn;
 }				t_data;
 
 typedef struct	s_md5
