@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/03 20:50:32 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/06 21:28:25 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <sys/mman.h>
 
 # define _USAGE_ "Usage: [-md5 -sha256] [-p -q -r -s] [file]\n"
+# define _USAGE_CONTEXT_ "Usage in context: [-md5 -sha256] [-p -q -r] [file]\n"
+
 
 # define MOD_BITS 448
 # define MOD_BYTE 56
@@ -58,7 +60,9 @@ typedef struct	s_content
 
 typedef struct	s_data
 {
+	int			turns;
 	t_hashflag	hash_flag;
+	t_bool		sslcontext;
 	t_bool		q_flag;
 	t_bool		r_flag;
 }				t_data;
@@ -99,6 +103,9 @@ typedef struct	s_sha2
 	uint32_t	h;
 }				t_sha2;
 
+void			ssl_context(t_data *ssl);
+t_bool			handle_option(int ac, char **av, t_data *ssl);
+
 void			ft_md5(t_content *content, t_data *ssl);
 void			ft_sha2(t_content *content, t_data *ssl);
 
@@ -108,5 +115,8 @@ t_content		*read_file(char *path);
 t_content		*read_param(char *param);
 t_content		*read_stdin(t_origin origin);
 void			parse_help(t_content *content, char *hash, t_data *ssl);
+
+
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/03 22:01:16 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/06 21:16:55 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,15 @@ t_content		*read_param(char *param)
 	char		*str;
 	int			len;
 
-	if (param == NULL)
-		return (NULL);
 	content = (t_content *)ft_memalloc(sizeof(t_content));
+	content->origin = PARAM;
+	if (param == NULL)
+		return (content);
 	len = ft_strlen(param);
 	str = ft_strnew(block_align64(len));
 	ft_strcpy(str, param);
 	content->content = str;
 	content->size = len;
-	content->origin = PARAM;
 	content->name = ft_strdup(param);
 	return (content);
 }
@@ -49,6 +49,7 @@ t_content		*read_stdin(t_origin origin)
 
 	stdin = NULL;
 	content = (t_content *)ft_memalloc(sizeof(t_content));
+	content->origin = origin;
 	content->size = 0;
 	while (get_next_line(0, &str) > 0)
 	{
@@ -64,7 +65,6 @@ t_content		*read_stdin(t_origin origin)
 	content->name = ft_strdup(content->content);
 	if (content->size > 0)
 		content->name[content->size - 1] = 0;
-	content->origin = origin;
 	ft_lststr_del(&stdin);
 	return (content);
 }
@@ -76,22 +76,22 @@ t_content		*read_file(char *path)
 	struct stat	buff;
 	t_content	*content;
 
+	content = (t_content *)ft_memalloc(sizeof(t_content));
+	content->name = path;
+	content->origin = FILE;
 	if ((fd = open(path, O_RDONLY)) < 0)
-		return (NULL);
+		return (content);
 	if (fstat(fd, &buff) < 0)
-		return (NULL);
+		return (content);
 	if (buff.st_size == 0)
 		ptr = ft_memalloc(block_align64(buff.st_size));
 	else
 		ptr = mmap(0, block_align64(buff.st_size),
 				PROT_WRITE, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
-		return (NULL);
-	content = (t_content *)ft_memalloc(sizeof(t_content));
+		return (content);
 	content->content = ptr;
 	content->size = buff.st_size;
-	content->name = path;
-	content->origin = FILE;
 	close(fd);
 	return (content);
 }
