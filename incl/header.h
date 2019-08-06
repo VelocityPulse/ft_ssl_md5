@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 21:28:25 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/06 22:03:25 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@
 typedef enum	e_hashflag
 {
 	T_MD5,
+	T_SHA224,
 	T_SHA256,
-	NB_TYPE,
 }				t_hashflag;
 
 typedef enum	e_origin
@@ -61,7 +61,7 @@ typedef struct	s_content
 typedef struct	s_data
 {
 	int			turns;
-	t_hashflag	hash_flag;
+	t_hashflag	hash;
 	t_bool		sslcontext;
 	t_bool		q_flag;
 	t_bool		r_flag;

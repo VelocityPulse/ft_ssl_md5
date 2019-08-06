@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/01 13:25:56 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/06 22:22:55 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,26 @@ static const uint32_t	g_k_sha2[64] = {
 	0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static void				ft_sha2_init_padding(char *s, int len, t_sha2 *sha2)
+static const uint32_t	g_state_sha224[8] = {
+	0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939, 0xffc00b31, \
+	0x68581511, 0x64f98fa7, 0xbefa4fa4
+};
+
+static const uint32_t	g_state_sha256[8] = {
+	0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, \
+	0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+};
+
+static void				ft_sha2_init_padding(char *s, int len, t_data *ssl,
+							t_sha2 *sha2)
 {
 	int		i;
 	int		lenght32;
 
-	sha2->state[0] = 0x6a09e667;
-	sha2->state[1] = 0xbb67ae85;
-	sha2->state[2] = 0x3c6ef372;
-	sha2->state[3] = 0xa54ff53a;
-	sha2->state[4] = 0x510e527f;
-	sha2->state[5] = 0x9b05688c;
-	sha2->state[6] = 0x1f83d9ab;
-	sha2->state[7] = 0x5be0cd19;
+	if (ssl->hash == T_SHA224)
+		ft_memcpy(sha2->state, g_state_sha224, 8 * 4);
+	else if (ssl->hash == T_SHA256)
+		ft_memcpy(sha2->state, g_state_sha256, 8 * 4);
 	sha2->aligned64 = block_align64(len);
 	ft_bzero(sha2->buff, 64 * 4);
 	s[len] = -128;
@@ -120,24 +127,26 @@ void					ft_sha2(t_content *content, t_data *ssl)
 {
 	t_sha2	sha2;
 	int		i;
+	int		digest_lenght;
 	char	digest[32];
 
 	ft_bzero(digest, 32);
-	ft_sha2_init_padding(content->content, content->size, &sha2);
+	ft_sha2_init_padding(content->content, content->size, ssl, &sha2);
 	ft_sha2_loop(content->content, &sha2);
 	if (content->origin == STDIN_P)
 		ft_printf("%s\n", content->name);
 	else if (!ssl->q_flag && !ssl->r_flag)
-		parse_help(content, "SHA256", ssl);
+		parse_help(content, ssl->hash == T_SHA256 ? "SHA256" : "SHA224", ssl);
 	i = -1;
 	while (++i < 8)
 		sha2.state[i] = ft_bswap32(sha2.state[i]);
 	ft_memcpy(digest, sha2.state, 32);
+	digest_lenght = ssl->hash == T_SHA256 ? 32 : 28;
 	i = -1;
-	while (++i < 32)
+	while (++i < digest_lenght)
 		ft_printf("%02x", digest[i] & 0xFF);
 	if (!ssl->q_flag && ssl->r_flag)
-		parse_help(content, "SHA256", ssl);
+		parse_help(content, ssl->hash == T_SHA256 ? "SHA256" : "SHA224", ssl);
 	else
 		ft_putchar('\n');
 }
