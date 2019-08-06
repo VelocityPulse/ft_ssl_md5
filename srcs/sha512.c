@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 23:25:45 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/06 23:39:07 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ static void				ft_sha512_core_message(uint64_t *buff, char *str,
 {
 	int		i;
 
+	ft_printf("jump : %d\n", (128 * (*block)));
 	ft_memcpy((void *)buff, str + (128 * (*block)++), 128);
 	i = 15;
 	while (++i < 80)
@@ -113,11 +114,11 @@ static void				ft_sha512_loop(char *str, t_sha512 *sha512)
 	int		rest;
 	int		block;
 
-	rest = sha512->aligned64 * 8 * 2;
+	rest = sha512->aligned64 * 8;
 	block = 0;
 	while (rest > 0)
 	{
-		rest -= BLOCK_BITS;
+		rest -= 1024;
 		ft_sha512_core_message(sha512->buff, str, &block, sha512);
 		ft_sha512_core(sha512);
 		sha512->state[0] += sha512->a;

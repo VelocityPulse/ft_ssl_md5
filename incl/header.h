@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 23:28:03 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/06 23:33:35 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
 # define ALIGN64(SIZE) (((SIZE - 1) + BLOCK_BYTE) - ((SIZE - 1) % BLOCK_BYTE))
 # define ALIGN128(SIZE) (((SIZE - 1) + 128) - ((SIZE - 1) % 128))
 
-
 # define SHA2_BLOCK_BYTE 256
 # define SHA2_BLOCK_BITS 2048
 
@@ -40,6 +39,7 @@ typedef enum	e_hashflag
 	T_MD5,
 	T_SHA224,
 	T_SHA256,
+	T_SHA512
 }				t_hashflag;
 
 typedef enum	e_origin
@@ -131,6 +131,7 @@ t_bool			handle_option(int ac, char **av, t_data *ssl);
 
 void			ft_md5(t_content *content, t_data *ssl);
 void			ft_sha2(t_content *content, t_data *ssl);
+void			ft_sha512(t_content *content, t_data *ssl);
 
 int				block_align64(int size);
 

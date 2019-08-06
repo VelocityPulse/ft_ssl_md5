@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 22:07:40 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/06 23:34:36 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static void		select_hash(t_content *content, t_data *ssl)
 		ft_md5(content, ssl);
 	else if (ssl->hash == T_SHA256 || ssl->hash == T_SHA224)
 		ft_sha2(content, ssl);
+	else if (ssl->hash == T_SHA512)
+		ft_sha512(content, ssl);
 	if (content->origin == FILE)
 	{
 		if (content->size == 0)
@@ -41,10 +43,12 @@ static t_bool	handle_hash_option(char *arg, t_data *ssl)
 {
 	if (ft_strequ(arg, "-md5") || ft_strequ(arg, "md5"))
 		ssl->hash = T_MD5;
-	else if (ft_strequ(arg, "-sha256") || ft_strequ(arg, "sha256"))
-		ssl->hash = T_SHA256;
 	else if (ft_strequ(arg, "-sha224") || ft_strequ(arg, "sha224"))
 		ssl->hash = T_SHA224;
+	else if (ft_strequ(arg, "-sha256") || ft_strequ(arg, "sha256"))
+		ssl->hash = T_SHA256;
+	else if (ft_strequ(arg, "-sha512") || ft_strequ(arg, "sha512"))
+		ssl->hash = T_SHA512;
 	else
 		return (false);
 	return (true);

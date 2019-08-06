@@ -6,7 +6,7 @@
 #    By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/21 12:14:25 by cchameyr          #+#    #+#              #
-#    Updated: 2019/08/06 22:38:51 by cchameyr         ###   ########.fr        #
+#    Updated: 2019/08/06 23:35:01 by cchameyr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ NAME =				ft_ssl
 
 LIBFT =				libft/libft.a
 
-#DEBUGSEGFAULT =		-g3 -fsanitize=address
+DEBUGSEGFAULT =		-g3 -fsanitize=address
 
 FLAGS =				-Wall -Wextra -Werror
 
