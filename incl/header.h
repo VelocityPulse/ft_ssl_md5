@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 22:03:25 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/06 23:28:03 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,16 @@
 # include <sys/stat.h>
 # include <sys/mman.h>
 
+// update usage (512 / 224)
 # define _USAGE_ "Usage: [-md5 -sha256] [-p -q -r -s] [file]\n"
 # define _USAGE_CONTEXT_ "Usage in context: [-md5 -sha256] [-p -q -r] [file]\n"
 
-
-# define MOD_BITS 448
-# define MOD_BYTE 56
 # define BLOCK_BITS 512
 # define BLOCK_BYTE 64
 # define ALIGN56(SIZE) (((SIZE - 1) + MOD_BYTE) - ((SIZE - 1) % MOD_BYTE))
 # define ALIGN64(SIZE) (((SIZE - 1) + BLOCK_BYTE) - ((SIZE - 1) % BLOCK_BYTE))
+# define ALIGN128(SIZE) (((SIZE - 1) + 128) - ((SIZE - 1) % 128))
+
 
 # define SHA2_BLOCK_BYTE 256
 # define SHA2_BLOCK_BITS 2048
@@ -102,6 +102,29 @@ typedef struct	s_sha2
 	uint32_t	g;
 	uint32_t	h;
 }				t_sha2;
+
+typedef struct	s_sha512
+{
+	uint64_t	buff[80];
+	uint64_t	state[8];
+	int			aligned64;
+	int			s0;
+	int			s1;
+	int			x0;
+	int			x1;
+	int			t1;
+	int			t2;
+	int			ch;
+	int			maj;
+	uint64_t	a;
+	uint64_t	b;
+	uint64_t	c;
+	uint64_t	d;
+	uint64_t	e;
+	uint64_t	f;
+	uint64_t	g;
+	uint64_t	h;
+}				t_sha512;
 
 void			ssl_context(t_data *ssl);
 t_bool			handle_option(int ac, char **av, t_data *ssl);
