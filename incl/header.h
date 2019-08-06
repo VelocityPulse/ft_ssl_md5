@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 23:33:35 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/06 23:44:29 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ typedef struct	s_sha512
 {
 	uint64_t	buff[80];
 	uint64_t	state[8];
-	int			aligned64;
+	int			aligned128;
 	int			s0;
 	int			s1;
 	int			x0;
@@ -133,11 +133,11 @@ void			ft_md5(t_content *content, t_data *ssl);
 void			ft_sha2(t_content *content, t_data *ssl);
 void			ft_sha512(t_content *content, t_data *ssl);
 
-int				block_align64(int size);
+int				block_align(int size, t_hashflag hash);
 
-t_content		*read_file(char *path);
-t_content		*read_param(char *param);
-t_content		*read_stdin(t_origin origin);
+t_content		*read_file(char *path, t_data *ssl);
+t_content		*read_param(char *param, t_data *ssl);
+t_content		*read_stdin(t_origin origin, t_data *ssl);
 void			parse_help(t_content *content, char *hash, t_data *ssl);
 
 

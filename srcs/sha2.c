@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 22:35:04 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 00:02:29 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,27 @@ static const uint32_t	g_state_sha256[8] = {
 	0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, \
 	0x9b05688c, 0x1f83d9ab, 0x5be0cd19
 };
+static void printBits(void const * const ptr, int size)
+{
+    unsigned char *b = (unsigned char*) ptr;
+    unsigned char byte;
+    int i, j;
+
+    for (i = 0; i < size; i++)
+    {
+		if (i != 0)
+			ft_printf(" ");
+		if (!(i % 8) && i != 0)
+			ft_printf("\n");
+		ft_printf("[%03d]", i);
+        for (j = 7; j >= 0; j--)
+        {
+            byte = (b[i] >> j) & 1;
+            ft_printf("%u", byte);
+        }
+    }
+    ft_printf("\n\n");
+}
 
 static void				ft_sha2_init_padding(char *s, int len, t_data *ssl,
 							t_sha2 *sha2)
@@ -46,14 +67,16 @@ static void				ft_sha2_init_padding(char *s, int len, t_data *ssl,
 		ft_memcpy(sha2->state, g_state_sha224, 8 * 4);
 	else if (ssl->hash == T_SHA256)
 		ft_memcpy(sha2->state, g_state_sha256, 8 * 4);
-	sha2->aligned64 = block_align64(len);
+	sha2->aligned64 = block_align(len, T_SHA512);
 	ft_bzero(sha2->buff, 64 * 4);
 	s[len] = -128;
 	lenght32 = sha2->aligned64 / 4;
 	i = -1;
+		printBits(s, sha2->aligned64);
 	while (++i < lenght32)
 		((uint32_t *)s)[i] = ft_bswap32(((uint32_t *)s)[i]);
 	((uint32_t *)s)[sha2->aligned64 / 4 - 1] = len * 8;
+			printBits(s, sha2->aligned64);
 }
 
 static void				ft_sha2_core_message(uint32_t *buff, char *str,
