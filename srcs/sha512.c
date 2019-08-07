@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 15:17:23 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 15:58:10 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,43 +48,20 @@ static const uint64_t	g_state_sha512[8] = {
 	0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
 };
 
-static void printBits(void const * const ptr, int size)
-{
-    unsigned char *b = (unsigned char*) ptr;
-    unsigned char byte;
-    int i, j;
-
-    for (i = 0; i < size; i++)
-    {
-		if (i != 0)
-			ft_printf(" ");
-		if (!(i % 8) && i != 0)
-			ft_printf("\n");
-		ft_printf("[%03d]", i);
-        for (j = 7; j >= 0; j--)
-        {
-            byte = (b[i] >> j) & 1;
-            ft_printf("%u", byte);
-        }
-    }
-    ft_printf("\n\n");
-}
-
 static void				ft_sha512_init_padding(char *s, int len, t_sha512 *sha512)
 {
 	int		i;
-	int		lenght32;
+	int		lenght64;
 
 	ft_memcpy(sha512->state, g_state_sha512, 8 * 8);
 	sha512->aligned128 = block_align(len, T_SHA512);
 	ft_bzero(sha512->buff, 64 * 8);
 	s[len] = -128;
-	lenght32 = sha512->aligned128 / 8;
+	lenght64 = sha512->aligned128 / 8;
 	i = -1;
-	while (++i < lenght32)
+	while (++i < lenght64)
 		((uint64_t *)s)[i] = ft_bswap64(((uint64_t *)s)[i]);
 	((uint64_t *)s)[sha512->aligned128 / 8 - 1] = len * 8;
-	printBits(s, sha512->aligned128);
 }
 
 static void				ft_sha512_core_message(uint64_t *buff, char *str,
@@ -92,15 +69,14 @@ static void				ft_sha512_core_message(uint64_t *buff, char *str,
 {
 	int		i;
 
-	// ft_printf("jump : %d\n", (128 * (*block)));
 	ft_memcpy((void *)buff, str + (128 * (*block)++), 128);
 	i = 15;
 	while (++i < 80)
 	{
-		sha512->s0 = ft_b64rotate_right(buff[i - 15], 7) ^
-			ft_b64rotate_right(buff[i - 15], 18) ^ (buff[i - 15] >> 3);
-		sha512->s1 = ft_b64rotate_right(buff[i - 2], 17) ^
-			ft_b64rotate_right(buff[i - 2], 19) ^ (buff[i - 2] >> 10);
+		sha512->s0 = ft_b64rotate_right(buff[i - 15], 1) ^
+			ft_b64rotate_right(buff[i - 15], 8) ^ (buff[i - 15] >> 7);
+		sha512->s1 = ft_b64rotate_right(buff[i - 2], 19) ^
+			ft_b64rotate_right(buff[i - 2], 61) ^ (buff[i - 2] >> 6);
 		buff[i] = buff[i - 16] + sha512->s0 + buff[i - 7] + sha512->s1;
 	}
 	ft_memcpy(&sha512->a, sha512->state, 8 * 8);
@@ -113,12 +89,12 @@ static void				ft_sha512_core(t_sha512 *s)
 	i = -1;
 	while (++i < 80)
 	{
-		s->x1 = ft_b64rotate_right(s->e, 6) ^
-			ft_b64rotate_right(s->e, 11) ^ ft_b64rotate_right(s->e, 25);
+		s->x1 = ft_b64rotate_right(s->e, 14) ^
+			ft_b64rotate_right(s->e, 18) ^ ft_b64rotate_right(s->e, 41);
 		s->ch = (s->e & s->f) ^ ((~s->e) & s->g);
 		s->t1 = s->h + s->x1 + s->ch + g_k_sha512[i] + s->buff[i];
-		s->x0 = ft_b64rotate_right(s->a, 2) ^
-			ft_b64rotate_right(s->a, 13) ^ ft_b64rotate_right(s->a, 22);
+		s->x0 = ft_b64rotate_right(s->a, 28) ^
+			ft_b64rotate_right(s->a, 34) ^ ft_b64rotate_right(s->a, 39);
 		s->maj = (s->a & s->b) ^ (s->a & s->c) ^ (s->b & s->c);
 		s->t2 = s->x0 + s->maj;
 		s->h = s->g;
@@ -141,7 +117,6 @@ static void				ft_sha512_loop(char *str, t_sha512 *sha512)
 	block = 0;
 	while (rest > 0)
 	{
-		// ft_printf("rest : %d\n", rest);
 		rest -= 1024;
 		ft_sha512_core_message(sha512->buff, str, &block, sha512);
 		ft_sha512_core(sha512);
@@ -159,8 +134,8 @@ static void				ft_sha512_loop(char *str, t_sha512 *sha512)
 void					ft_sha512(t_content *content, t_data *ssl)
 {
 	t_sha512	sha512;
-	int		i;
-	char	digest[64];
+	int			i;
+	char		digest[64];
 
 	ft_bzero(digest, 64);
 	ft_sha512_init_padding(content->content, content->size, &sha512);
