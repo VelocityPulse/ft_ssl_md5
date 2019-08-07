@@ -6,7 +6,7 @@
 #    By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/21 12:14:25 by cchameyr          #+#    #+#              #
-#    Updated: 2019/08/07 15:58:22 by cchameyr         ###   ########.fr        #
+#    Updated: 2019/08/07 16:53:39 by cchameyr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,6 @@ FILES =				main.c \
 					ssl_process.c \
 					sha2.c \
 					sha512.c \
-					ssl_context.c
 
 SRCS =				$(addprefix srcs/, $(FILES))
 

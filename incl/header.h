@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 16:18:07 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 16:53:21 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,6 @@ typedef struct	s_sha512
 	uint64_t	h;
 }				t_sha512;
 
-void			ssl_context(t_data *ssl);
 t_bool			handle_option(int ac, char **av, t_data *ssl);
 
 void			ft_md5(t_content *content, t_data *ssl);

@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 16:39:25 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 16:55:31 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,13 +107,28 @@ t_bool			handle_option(int ac, char **av, t_data *ssl)
 int				main(int argc, char **argv)
 {
 	t_data		ssl;
+	t_data		reset_ssl;
+	char		*str;
+	char		**context_args;
 
 	ft_bzero((void *)&ssl, sizeof(t_data));
 	if (argc == 1)
 	{
-		ssl_context(&ssl);
-		return (0);
+		ft_bzero((void **)&reset_ssl, sizeof(t_data));
+		reset_ssl.sslcontext = true;
+		ft_putstr("ft_ssl> ");
+		while (get_next_line(0, &str) > 0)
+		{
+			ssl = reset_ssl;
+			context_args = ft_strsplit(str, ' ');
+			handle_option(ft_memlen((void **)context_args), context_args, &ssl);
+			ft_memdel2((void ***)&context_args);
+			ft_memdel((void **)&str);
+			ft_putstr("ft_ssl> ");
+		}
+		write(1, "\n", 1);
 	}
-	handle_option(argc - 1, &(argv[1]), &ssl);
+	else
+		handle_option(argc - 1, &(argv[1]), &ssl);
 	return (0);
 }
