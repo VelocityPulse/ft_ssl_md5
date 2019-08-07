@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 23:34:36 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 15:14:06 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,14 @@ static t_bool	handle_param_option(char **av, int *i, t_data *ssl)
 	t_content	*content;
 
 	if (ft_strequ(av[*i], "-p"))
-		select_hash(read_stdin(STDIN_P), ssl);
+		select_hash(read_stdin(STDIN_P, ssl), ssl);
 	else if (ft_strequ(av[*i], "-q"))
 		ssl->q_flag = true;
 	else if (ft_strequ(av[*i], "-r"))
 		ssl->r_flag = true;
 	else if (ft_strequ(av[*i], "-s") && !ssl->sslcontext)
 	{
-		if ((content = read_param(av[++(*i)])) == NULL)
+		if ((content = read_param(av[++(*i)], ssl)) == NULL)
 			ft_printf("ft_ssl: option requires an argument --s\n%s\n", _USAGE_);
 		else
 			select_hash(content, ssl);
@@ -96,9 +96,9 @@ t_bool			handle_option(int ac, char **av, t_data *ssl)
 	}
 	i--;
 	while (++i < ac)
-		select_hash(read_file(av[i]), ssl);
+		select_hash(read_file(av[i], ssl), ssl);
 	if (!ssl->turns)
-		select_hash(read_stdin(STDIN_D), ssl);
+		select_hash(read_stdin(STDIN_D, ssl), ssl);
 	return (true);
 }
 

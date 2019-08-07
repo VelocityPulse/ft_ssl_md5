@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 23:33:35 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 15:12:18 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,14 @@ typedef struct	s_sha2
 	uint32_t	buff[64];
 	uint32_t	state[8];
 	int			aligned64;
-	int			s0;
-	int			s1;
-	int			x0;
-	int			x1;
-	int			t1;
-	int			t2;
-	int			ch;
-	int			maj;
+	uint32_t	s0;
+	uint32_t	s1;
+	uint32_t	x0;
+	uint32_t	x1;
+	uint32_t	t1;
+	uint32_t	t2;
+	uint32_t	ch;
+	uint32_t	maj;
 	uint32_t	a;
 	uint32_t	b;
 	uint32_t	c;
@@ -107,15 +107,15 @@ typedef struct	s_sha512
 {
 	uint64_t	buff[80];
 	uint64_t	state[8];
-	int			aligned64;
-	int			s0;
-	int			s1;
-	int			x0;
-	int			x1;
-	int			t1;
-	int			t2;
-	int			ch;
-	int			maj;
+	int			aligned128;
+	uint64_t	s0;
+	uint64_t	s1;
+	uint64_t	x0;
+	uint64_t	x1;
+	uint64_t	t1;
+	uint64_t	t2;
+	uint64_t	ch;
+	uint64_t	maj;
 	uint64_t	a;
 	uint64_t	b;
 	uint64_t	c;
@@ -133,11 +133,11 @@ void			ft_md5(t_content *content, t_data *ssl);
 void			ft_sha2(t_content *content, t_data *ssl);
 void			ft_sha512(t_content *content, t_data *ssl);
 
-int				block_align64(int size);
+int				block_align(int size, t_hashflag hash);
 
-t_content		*read_file(char *path);
-t_content		*read_param(char *param);
-t_content		*read_stdin(t_origin origin);
+t_content		*read_file(char *path, t_data *ssl);
+t_content		*read_param(char *param, t_data *ssl);
+t_content		*read_stdin(t_origin origin, t_data *ssl);
 void			parse_help(t_content *content, char *hash, t_data *ssl);
 
 

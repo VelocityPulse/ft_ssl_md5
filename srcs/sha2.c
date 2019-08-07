@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 22:35:04 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 15:14:20 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void				ft_sha2_init_padding(char *s, int len, t_data *ssl,
 		ft_memcpy(sha2->state, g_state_sha224, 8 * 4);
 	else if (ssl->hash == T_SHA256)
 		ft_memcpy(sha2->state, g_state_sha256, 8 * 4);
-	sha2->aligned64 = block_align64(len);
+	sha2->aligned64 = block_align(len, T_SHA256);
 	ft_bzero(sha2->buff, 64 * 4);
 	s[len] = -128;
 	lenght32 = sha2->aligned64 / 4;
@@ -109,6 +109,7 @@ static void				ft_sha2_loop(char *str, t_sha2 *sha2)
 	block = 0;
 	while (rest > 0)
 	{
+				ft_printf("rest : %d\n", rest);
 		rest -= BLOCK_BITS;
 		ft_sha2_core_message(sha2->buff, str, &block, sha2);
 		ft_sha2_core(sha2);

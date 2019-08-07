@@ -6,23 +6,31 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/06 23:30:12 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 15:15:27 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incl/header.h"
 
-int				block_align64(int size)
+int				block_align(int size, t_hashflag hash)
 {
 	int a;
 
-	a = ALIGN64(size);
-	if (size >= a - 8)
-		a += BLOCK_BYTE;
+	if (hash != T_SHA512) {
+		a = ALIGN64(size);
+		if (size >= a - 8)
+			a += BLOCK_BYTE;
+	}
+	else
+	{
+		a = ALIGN128(size);
+		if (size >= a - 8)
+			a += 128;
+	}
 	return (a);
 }
 
-t_content		*read_param(char *param)
+t_content		*read_param(char *param, t_data *ssl)
 {
 	t_content	*content;
 	char		*str;
@@ -33,7 +41,7 @@ t_content		*read_param(char *param)
 	if (param == NULL)
 		return (content);
 	len = ft_strlen(param);
-	str = ft_strnew(block_align64(len));
+	str = ft_strnew(block_align(len, ssl->hash));
 	ft_strcpy(str, param);
 	content->content = str;
 	content->size = len;
@@ -41,7 +49,7 @@ t_content		*read_param(char *param)
 	return (content);
 }
 
-t_content		*read_stdin(t_origin origin)
+t_content		*read_stdin(t_origin origin, t_data *ssl)
 {
 	char		*str;
 	t_lststr	*stdin;
@@ -59,7 +67,7 @@ t_content		*read_stdin(t_origin origin)
 	}
 	ft_memdel((void **)&str);
 	str = ft_merge_lststr(stdin);
-	content->content = ft_strnew(block_align64(content->size));
+	content->content = ft_strnew(block_align(content->size, ssl->hash));
 	ft_memcpy(content->content, str, content->size);
 	ft_memdel((void **)&str);
 	content->name = ft_strdup(content->content);
@@ -69,7 +77,7 @@ t_content		*read_stdin(t_origin origin)
 	return (content);
 }
 
-t_content		*read_file(char *path)
+t_content		*read_file(char *path, t_data *ssl)
 {
 	int			fd;
 	void		*ptr;
@@ -84,9 +92,9 @@ t_content		*read_file(char *path)
 	if (fstat(fd, &buff) < 0)
 		return (content);
 	if (buff.st_size == 0)
-		ptr = ft_memalloc(block_align64(buff.st_size));
+		ptr = ft_memalloc(block_align(buff.st_size, ssl->hash));
 	else
-		ptr = mmap(0, block_align64(buff.st_size),
+		ptr = mmap(0, block_align(buff.st_size, ssl->hash),
 				PROT_WRITE, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
 		return (content);
