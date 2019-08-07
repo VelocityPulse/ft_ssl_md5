@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 15:14:06 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 16:39:25 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void		select_hash(t_content *content, t_data *ssl)
 		ft_md5(content, ssl);
 	else if (ssl->hash == T_SHA256 || ssl->hash == T_SHA224)
 		ft_sha2(content, ssl);
-	else if (ssl->hash == T_SHA512)
+	else if (ssl->hash == T_SHA512 || ssl->hash == T_SHA384)
 		ft_sha512(content, ssl);
 	if (content->origin == FILE)
 	{
@@ -47,6 +47,8 @@ static t_bool	handle_hash_option(char *arg, t_data *ssl)
 		ssl->hash = T_SHA224;
 	else if (ft_strequ(arg, "-sha256") || ft_strequ(arg, "sha256"))
 		ssl->hash = T_SHA256;
+	else if (ft_strequ(arg, "-sha384") || ft_strequ(arg, "sha384"))
+		ssl->hash = T_SHA384;
 	else if (ft_strequ(arg, "-sha512") || ft_strequ(arg, "sha512"))
 		ssl->hash = T_SHA512;
 	else

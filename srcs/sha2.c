@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 15:14:20 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 16:38:42 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ static void				ft_sha2_loop(char *str, t_sha2 *sha2)
 	block = 0;
 	while (rest > 0)
 	{
-				ft_printf("rest : %d\n", rest);
 		rest -= BLOCK_BITS;
 		ft_sha2_core_message(sha2->buff, str, &block, sha2);
 		ft_sha2_core(sha2);

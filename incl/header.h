@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 15:12:18 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 16:18:07 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef enum	e_hashflag
 	T_MD5,
 	T_SHA224,
 	T_SHA256,
+	T_SHA384,
 	T_SHA512
 }				t_hashflag;
 

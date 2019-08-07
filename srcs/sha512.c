@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 15:58:10 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/08/07 16:23:25 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,18 +42,28 @@ static const uint64_t g_k_sha512[80] = {
 	0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
 
+static const uint64_t	g_state_sha384[8] = {
+	0xcbbb9d5dc1059ed8, 0x629a292a367cd507, 0x9159015a3070dd17,
+	0x152fecd8f70e5939, 0x67332667ffc00b31, 0x8eb44a8768581511,
+	0xdb0c2e0d64f98fa7, 0x47b5481dbefa4fa4
+};
+
 static const uint64_t	g_state_sha512[8] = {
 	0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b,
 	0xa54ff53a5f1d36f1, 0x510e527fade682d1, 0x9b05688c2b3e6c1f,
 	0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
 };
 
-static void				ft_sha512_init_padding(char *s, int len, t_sha512 *sha512)
+static void				ft_sha512_init_padding(char *s, int len, t_data *ssl,
+							t_sha512 *sha512)
 {
 	int		i;
 	int		lenght64;
 
-	ft_memcpy(sha512->state, g_state_sha512, 8 * 8);
+	if (ssl->hash == T_SHA384)
+		ft_memcpy(sha512->state, g_state_sha384, 8 * 8);
+	else if (ssl->hash == T_SHA512)
+		ft_memcpy(sha512->state, g_state_sha512, 8 * 8);
 	sha512->aligned128 = block_align(len, T_SHA512);
 	ft_bzero(sha512->buff, 64 * 8);
 	s[len] = -128;
@@ -135,24 +145,26 @@ void					ft_sha512(t_content *content, t_data *ssl)
 {
 	t_sha512	sha512;
 	int			i;
+	int			digest_lenght;
 	char		digest[64];
 
 	ft_bzero(digest, 64);
-	ft_sha512_init_padding(content->content, content->size, &sha512);
+	ft_sha512_init_padding(content->content, content->size, ssl, &sha512);
 	ft_sha512_loop(content->content, &sha512);
 	if (content->origin == STDIN_P)
 		ft_printf("%s\n", content->name);
 	else if (!ssl->q_flag && !ssl->r_flag)
-		parse_help(content, "SHA512", ssl);
+		parse_help(content, ssl->hash == T_SHA512 ? "SHA512" : "SHA384", ssl);
 	i = -1;
 	while (++i < 8)
 		sha512.state[i] = ft_bswap64(sha512.state[i]);
 	ft_memcpy(digest, sha512.state, 64);
+	digest_lenght = ssl->hash == T_SHA512 ? 64 : 48;
 	i = -1;
-	while (++i < 64)
+	while (++i < digest_lenght)
 		ft_printf("%02x", digest[i] & 0xFF);
 	if (!ssl->q_flag && ssl->r_flag)
-		parse_help(content, "SHA512", ssl);
+		parse_help(content, ssl->hash == T_SHA512 ? "SHA512" : "SHA384", ssl);
 	else
 		ft_putchar('\n');
 }
