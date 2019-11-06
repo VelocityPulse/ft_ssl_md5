@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 16:55:31 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/11/06 15:37:34 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,9 @@ t_bool			handle_option(int ac, char **av, t_data *ssl)
 	while (++i < ac)
 	{
 		if (handle_hash_option(av[i], ssl))
-			continue;
+			continue ;
 		if (av[i][0] != '-')
-			break;
+			break ;
 		if (!handle_param_option(av, &i, ssl))
 			return (false);
 	}

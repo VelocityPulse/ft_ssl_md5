@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 16:38:02 by cchameyr         ###   ########.fr       */
+/*   Updated: 2019/11/06 15:36:39 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ int				block_align(int size, t_hashflag hash)
 {
 	int a;
 
-	if (hash != T_SHA512 && hash != T_SHA384) {
+	if (hash != T_SHA512 && hash != T_SHA384)
+	{
 		a = ALIGN64(size);
 		if (size >= a - 8)
 			a += BLOCK_BYTE;
