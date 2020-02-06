@@ -99,9 +99,9 @@ t_bool			handle_option(int ac, char **av, t_data *ssl)
 	while (++i < ac)
 	{
 		if (handle_hash_option(av[i], ssl))
-			continue;
+			continue ;
 		if (av[i][0] != '-')
-			break;
+			break ;
 		if (!handle_param_option(av, &i, ssl))
 			return (false);
 	}
