@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 16:53:21 by cchameyr         ###   ########.fr       */
+/*   Updated: 2020/02/06 12:26:28 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@
 # include <sys/mman.h>
 
 // update usage (512 / 224)
-# define _USAGE_ "Usage: [-md5 -sha256] [-p -q -r -s] [file]\n"
-# define _USAGE_CONTEXT_ "Usage in context: [-md5 -sha256] [-p -q -r] [file]\n"
+# define _HASHS_ "[-md5 -sha224 -sha256 -sha384 -sha512]"
+# define _USAGE_ "Usage: " _HASHS_ " [-p -q -r -s] [file]\n" 
+# define _USAGE_CONTEXT_ "Usage in context: " _HASHS_ " [-p -q -r] [file]\n"
 
 # define BLOCK_BITS 512
 # define BLOCK_BYTE 64
@@ -63,6 +64,7 @@ typedef struct	s_data
 {
 	int			turns;
 	t_hashflag	hash;
+	void		(*hash_func)();
 	t_bool		sslcontext;
 	t_bool		q_flag;
 	t_bool		r_flag;

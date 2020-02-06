@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/08/07 16:55:31 by cchameyr         ###   ########.fr       */
+/*   Updated: 2020/02/06 12:05:22 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,8 @@ static void		select_hash(t_content *content, t_data *ssl)
 	ssl->turns++;
 	if (content->content == NULL)
 		ft_printf("ft_ssl: %s: No such file or directory\n", content->name);
-	else if (ssl->hash == T_MD5)
-		ft_md5(content, ssl);
-	else if (ssl->hash == T_SHA256 || ssl->hash == T_SHA224)
-		ft_sha2(content, ssl);
-	else if (ssl->hash == T_SHA512 || ssl->hash == T_SHA384)
-		ft_sha512(content, ssl);
+	else
+		ssl->hash_func(content, ssl);
 	if (content->origin == FILE)
 	{
 		if (content->size == 0)
@@ -42,15 +38,27 @@ static void		select_hash(t_content *content, t_data *ssl)
 static t_bool	handle_hash_option(char *arg, t_data *ssl)
 {
 	if (ft_strequ(arg, "-md5") || ft_strequ(arg, "md5"))
-		ssl->hash = T_MD5;
+		ssl->hash_func = ft_md5;
 	else if (ft_strequ(arg, "-sha224") || ft_strequ(arg, "sha224"))
+	{
 		ssl->hash = T_SHA224;
-	else if (ft_strequ(arg, "-sha256") || ft_strequ(arg, "sha256"))
+		ssl->hash_func = ft_sha2;
+	}
+	else if (ft_strequ(arg, "-sha256") || ft_strequ(arg, "sha256")) 
+	{
 		ssl->hash = T_SHA256;
+		ssl->hash_func = ft_sha2;
+	}
 	else if (ft_strequ(arg, "-sha384") || ft_strequ(arg, "sha384"))
+	{
 		ssl->hash = T_SHA384;
+		ssl->hash_func = ft_sha512;
+	}
 	else if (ft_strequ(arg, "-sha512") || ft_strequ(arg, "sha512"))
+	{
 		ssl->hash = T_SHA512;
+		ssl->hash_func = ft_sha512;
+	}
 	else
 		return (false);
 	return (true);
@@ -86,6 +94,7 @@ t_bool			handle_option(int ac, char **av, t_data *ssl)
 	int			i;
 
 	ssl->turns = 0;
+	ssl->hash_func = ft_md5;
 	i = -1;
 	while (++i < ac)
 	{
