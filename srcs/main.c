@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2020/02/06 12:05:22 by cchameyr         ###   ########.fr       */
+/*   Updated: 2020/03/03 11:22:11 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static t_bool	handle_hash_option(char *arg, t_data *ssl)
 		ssl->hash = T_SHA224;
 		ssl->hash_func = ft_sha2;
 	}
-	else if (ft_strequ(arg, "-sha256") || ft_strequ(arg, "sha256")) 
+	else if (ft_strequ(arg, "-sha256") || ft_strequ(arg, "sha256"))
 	{
 		ssl->hash = T_SHA256;
 		ssl->hash_func = ft_sha2;
@@ -77,13 +77,13 @@ static t_bool	handle_param_option(char **av, int *i, t_data *ssl)
 	else if (ft_strequ(av[*i], "-s") && !ssl->sslcontext)
 	{
 		if ((content = read_param(av[++(*i)], ssl)) == NULL)
-			ft_printf("ft_ssl: option requires an argument --s\n%s\n", _USAGE_);
+			ft_printf("ft_ssl: option requires an argument --s\n%s\n", usg());
 		else
 			select_hash(content, ssl);
 	}
 	else
 	{
-		ft_putstr(ssl->sslcontext == true ? _USAGE_CONTEXT_ : _USAGE_);
+		ft_printf("%s", (ssl->sslcontext == true ? usg_c() : usg()));
 		return (false);
 	}
 	return (true);

@@ -6,7 +6,7 @@
 /*   By: cchameyr <cchameyr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 13:47:34 by cchameyr          #+#    #+#             */
-/*   Updated: 2019/11/06 15:56:07 by cchameyr         ###   ########.fr       */
+/*   Updated: 2020/03/03 10:15:18 by cchameyr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,8 @@
 # include <sys/stat.h>
 # include <sys/mman.h>
 
-# define _ALGO_ "-md5 -sha224 -sha256 -sha384 -sha512"
-
-# define _USAGE_ "Usage: ["_ALGO_"] [-p -q -r -s] [file]\n"
-# define _USAGE_CONTEXT_ "Usage in context: ["_ALGO_"] [-p -q -r] [file]\n"
-
 # define BLOCK_BITS 512
 # define BLOCK_BYTE 64
-# define ALIGN56(SIZE) (((SIZE - 1) + MOD_BYTE) - ((SIZE - 1) % MOD_BYTE))
-# define ALIGN64(SIZE) (((SIZE - 1) + BLOCK_BYTE) - ((SIZE - 1) % BLOCK_BYTE))
-# define ALIGN128(SIZE) (((SIZE - 1) + 128) - ((SIZE - 1) % 128))
 
 # define SHA2_BLOCK_BYTE 256
 # define SHA2_BLOCK_BITS 2048
@@ -141,5 +133,10 @@ t_content		*read_file(char *path, t_data *ssl);
 t_content		*read_param(char *param, t_data *ssl);
 t_content		*read_stdin(t_origin origin, t_data *ssl);
 void			parse_help(t_content *content, char *hash, t_data *ssl);
+
+char			*usg();
+char			*usg_c();
+int				align_64();
+int				align_128();
 
 #endif
